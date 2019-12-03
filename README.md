@@ -1,5 +1,3 @@
-<!--- ## Introduction --->
-## Introduction
 A tool for predicting and visualizing the fMRI brain activity during bidirectional conversations of type human-human or human-machine.
 
 
