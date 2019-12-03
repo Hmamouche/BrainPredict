@@ -34,11 +34,11 @@ b-O~-Z-u-R
 			xmin = 9.12997732426
 			xmax = 11.2299773243
 			text = "m-w-A/
-{Z|Z-@|S}
+{Z-@|S|Z}
 {k-R-w-A/-z|k-R-w-A/}
 {k|k-@}
 s
-{t|e-t|E-s-t-@|e|E-t|E|E-s-t}
+{E-t|E-s-t-@|e|e-t|t|E|E-s-t}
 {y-n|y-n-@}
 {p-O/-m|p-O/-m-@}"
 		intervals [6]:
@@ -48,9 +48,9 @@ s
 		intervals [7]:
 			xmin = 16.1
 			xmax = 17.7299773243
-			text = "{s-E-t|s-E-t-@}
+			text = "{s-E-t-@|s-E-t}
 {p-O/-m|p-O/-m-@}
-{t|e-t|E-s-t-@|e|E-t|E|E-s-t}
+{E-t|E-s-t-@|e|e-t|t|E|E-s-t}
 A/
 l
 {a~-v-E-R-z|a~-v-E-R}"
@@ -62,12 +62,12 @@ l
 			xmin = 23.6100226757
 			xmax = 24.6899773243
 			text = "k
-{t|e-t|E-s-t-@|e|E-t|E|E-s-t}
-{s-@|s-e-2|s}
+{E-t|E-s-t-@|e|e-t|t|E|E-s-t}
+{s|s-e-2|s-@}
 {k|k-@}
 t
 a~
-{p-a~-s-@|p-a~-s}"
+{p-a~-s|p-a~-s-@}"
 		intervals [10]:
 			xmin = 24.6899773243
 			xmax = 30.3299773243
@@ -75,9 +75,9 @@ a~
 		intervals [11]:
 			xmin = 30.3299773243
 			xmax = 31.5299773243
-			text = "{w-i|u-i}
+			text = "{u-i|w-i}
 s
-{t|e-t|E-s-t-@|e|E-t|E|E-s-t}
+{E-t|E-s-t-@|e|e-t|t|E|E-s-t}
 {p-O/-s-i-b-l-@|p-O/-s-i-b-l}"
 		intervals [12]:
 			xmin = 31.5299773243
@@ -86,10 +86,10 @@ s
 		intervals [13]:
 			xmin = 35.72
 			xmax = 37.2899773243
-			text = "{s-E-t|s-E-t-@}
+			text = "{s-E-t-@|s-E-t}
 {p-O/-m|p-O/-m-@}
 A/
-{d-E-z|d-e|d-e-z|d|d-E}
+{d-e-z|d|d-E|d-e|d-E-z}
 {g-R-a~|g-R-a~-z}
 {j-2-z|j-@}"
 		intervals [14]:
@@ -99,9 +99,9 @@ A/
 		intervals [15]:
 			xmin = 43.1950113379
 			xmax = 44.7699773243
-			text = "{n-O~-n|n-a~|n-O/|n-O~}
-{Z|Z-@|S}
-{n|n-@}
+			text = "{n-a~|n-O~|n-O/|n-O~-n}
+{Z-@|S|Z}
+{n-@|n}
 {k-R-w-A/-z|k-R-w-A/}
 {p-A/|p-A/-z}"
 		intervals [16]:
@@ -115,8 +115,8 @@ A/
 A/
 d-E-k-u-p-e
 {U~/|U~/-n}
-{v-i-z-A/-Z|v-i-z-A/-Z-@}
-{d-a~|d-a~-z}
+{v-i-z-A/-Z-@|v-i-z-A/-Z}
+{d-a~-z|d-a~}
 l-A/
 {p-O/-m|p-O/-m-@}"
 		intervals [18]:
@@ -126,9 +126,9 @@ l-A/
 		intervals [19]:
 			xmin = 57.12
 			xmax = 58.0099773243
-			text = "{t|t-y|t-j}
-{n|n-@}
-{p-a~-s-@|p-a~-s}
+			text = "{t-y|t-j|t}
+{n-@|n}
+{p-a~-s|p-a~-s-@}
 {p-A/|p-A/-z}"
 		intervals [20]:
 			xmin = 58.0099773243

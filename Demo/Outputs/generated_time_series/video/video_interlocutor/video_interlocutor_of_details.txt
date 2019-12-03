@@ -1,5 +1,5 @@
-Input:Inputs/video/video_interlocutor.avi
-Input full path:/home/youssef/Github/BrainPredict/Inputs/video/video_interlocutor.avi
+Input:Demo/Inputs/video/video_interlocutor.avi
+Input full path:/home/youssef/Github/BrainPredict/Demo/Inputs/video/video_interlocutor.avi
 Camera parameters:500,500,320,240
 Output HOG:video_interlocutor.hog
 Output video:video_interlocutor.avi

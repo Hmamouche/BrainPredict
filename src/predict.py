@@ -104,64 +104,81 @@ def get_predictors_dict (model_name, region, type, path):
 
 #---------------------------------------------------#
 def speech_features (pred_path, compute_features, out_dir):
-    """
-    generate speech features from audio files
-    pred_path: path of the prediction module
-    compute_features: logical, for computing the features or not (if they alreadu exists)
-    out_dir: output directory
-    """
+	"""
+	generate speech features from audio files
+	pred_path: path of the prediction module
+	compute_features: logical, for computing the features or not (if they alreadu exists)
+	out_dir: output directory
+	"""
 
-    #print ("Processing speech")
-    if compute_features:
-    	audio_path = "Inputs/speech"
-    	'''os. system ("python %s/src/utils/SPPAS/sppas/bin/normalize.py -r %s/src/utils/SPPAS/resources/vocab/eng.vocab -I %s  -l fra -e .TextGrid --quiet"%(pred_path, pred_path, audio_path))
-    	os. system ("python %s/src/utils/SPPAS/sppas/bin/phonetize.py  -I %s -l fra -e .TextGrid"%(pred_path, audio_path))
-    	os. system ("python %s/src/utils/SPPAS/sppas/bin/alignment.py  -I %s -l fra -e .TextGrid --aligner basic"%(pred_path, audio_path))'''
-    	#os. system ("python %s/src/generate_ts/speech_features.py Inputs/speech/ %s/"%(pred_path,out_dir))
-    	out = os. system ("python %s/src/generate_ts/speech_features.py Inputs/speech/ %s/ -l"%(pred_path,out_dir))
+	audio_input = "%s/Inputs/speech"%out_dir
+	audio_output = "%s/Outputs/generated_time_series/speech"%out_dir
 
-    if out_dir[-1] != '/':
-    	out_dir += '/'
-    speech = pd. read_pickle (out_dir + "speech_features.pkl")
-    speech_left = pd. read_pickle (out_dir + "speech_features_left.pkl")
-    return speech_left, speech
+	if compute_features:
+		'''os. system ("python %s/src/utils/SPPAS/sppas/bin/normalize.py -r %s/src/utils/SPPAS/resources/vocab/eng.vocab -I %s  -l fra -e .TextGrid --quiet"%(pred_path, pred_path, audio_input))
+		os. system ("python %s/src/utils/SPPAS/sppas/bin/phonetize.py  -I %s -l fra -e .TextGrid"%(pred_path, audio_input))
+		os. system ("python %s/src/utils/SPPAS/sppas/bin/alignment.py  -I %s -l fra -e .TextGrid --aligner basic"%(pred_path, audio_input))'''
+
+		out = os. system ("python %s/src/generate_ts/speech_features.py %s %s/ -ren"%(pred_path, audio_input, audio_output))
+		out = os. system ("python %s/src/generate_ts/speech_features.py %s %s/ -l -ren"%(pred_path, audio_input, audio_output))
+
+	if out_dir[-1] != '/':
+		out_dir += '/'
+	speech = pd. read_pickle ("%s/speech_features.pkl"%audio_output)
+	speech_left = pd. read_pickle ("%s/speech_features_left.pkl"%audio_output)
+	return speech_left, speech
 
 #---------------------------------------------------#
 def facial_features (pred_path, compute_features, out_dir, openface_path):
-    """ facial features  """
+	""" facial features  """
 
-    #print ("Processing video")
-    video_path = glob.glob ("Inputs/video/*.avi")[0]
+	#video_input = "%s/Inputs/video"%out_dir
+	video_output = "%s/Outputs/generated_time_series/video"%out_dir
+	video_path = glob.glob ("%s/Inputs/video/*.avi"%out_dir)
+	if len (video_path) == 0:
+		print ("Error: there no input video!")
+		exit (1)
+	else:
+		video_path = video_path[0]
 
-    if out_dir[-1] != '/':
-    	out_dir += '/'
 
-    if compute_features:
-    	out = os. system ("python %s/src/generate_ts/facial_action_units.py %s %s -op %s"%(pred_path, video_path, out_dir, openface_path))
+	if out_dir[-1] != '/':
+		out_dir += '/'
 
-    video_features = glob.glob (out_dir + "*.pkl")[0]
-    video_feats = pd. read_pickle (video_features)
-    return video_feats
+	if compute_features:
+		out = os. system ("python %s/src/generate_ts/facial_action_units.py %s %s -op %s"%(pred_path, video_path, video_output, openface_path))
+
+	video_features = glob.glob (video_output + "/*.pkl")[0]
+	video_feats = pd. read_pickle (video_features)
+	return video_feats
 
 #---------------------------------------------------#
 def eyetracking_features (pred_path, compute_features, out_dir):
-    """ eyetracking data """
+	""" eyetracking data """
 
-    #print ("Processing eyetracking data")
-    if out_dir[-1] != '/':
-    	out_dir += '/'
+	video_output = "%s/Outputs/generated_time_series/video"%out_dir
+	eyetracking_output = "%s/Outputs/generated_time_series/eyetracking"%out_dir
+	video_path = glob.glob ("%s/Inputs/video/*.avi"%out_dir)
+	if len (video_path) == 0:
+		print ("Error: there no input video!")
+		exit (1)
+	else:
+		video_path = video_path [0]
 
-    if compute_features:
-    	video_path = glob.glob ("Inputs/video/*.avi")[0]
-    	openface_features = glob.glob ("Outputs/generated_time_series/video/"+ video_path[:-4]. split ('/')[-1] + "/*.csv")[0]
-    	gaze_coordinates_file = glob.glob ("Inputs/eyetracking/*.pkl")[0]
+	#print ("Processing eyetracking data")
+	if out_dir[-1] != '/':
+		out_dir += '/'
 
-    	out = os. system ("python %s/src/generate_ts/eyetracking.py %s %s -d -eye %s -faf %s -sv"%(pred_path, video_path, out_dir, gaze_coordinates_file, openface_features))
+	if compute_features:
+		openface_features = glob.glob (video_output + "/" + video_path[:-4]. split ('/')[-1] + "/*.csv")[0]
+		gaze_coordinates_file = glob.glob ("%s/Inputs/eyetracking/*.pkl"%out_dir)[0]
 
-    eyetracking_filename = glob.glob ("Outputs/generated_time_series/eyetracking/*.pkl")[0]
-    eyetracking = pd. read_pickle (eyetracking_filename)
+		out = os. system ("python %s/src/generate_ts/eyetracking.py %s %s -d -eye %s -faf %s -sv"%(pred_path, video_path, eyetracking_output, gaze_coordinates_file, openface_features))
 
-    return eyetracking
+	eyetracking_filename = glob.glob ("%s/*.pkl"%eyetracking_output)[0]
+	eyetracking = pd. read_pickle (eyetracking_filename)
+
+	return eyetracking
 
 #---------------------------------------------------#
 if __name__ == '__main__':
@@ -171,15 +188,16 @@ if __name__ == '__main__':
 	parser. add_argument ('--lag','-lag', default = 6, type=int)
 	parser. add_argument ('--openface_path','-ofp', help = "path of Openface")
 	parser. add_argument ('--pred_module_path','-pmp', help = "path of the prediction module")
+	parser. add_argument ('--input_dir','-in', help = "path of input directory")
 	parser. add_argument ("--generate", "-g", help = "generate features from input signals", action="store_true")
 	parser. add_argument ("--predict", "-p", help = "make predictions", action="store_true")
 	args = parser.parse_args()
 
 
 	if args. pred_module_path [-1] == '/':
-	    args. pred_module_path = args. pred_module_path [:-1]
+		args. pred_module_path = args. pred_module_path [:-1]
 
-	out_dir = "Outputs/generated_time_series/"
+	out_dir =  "%s/Outputs/generated_time_series/"%args.input_dir
 
 	# GET REGIONS NAMES FOR THEIR CODES
 	brain_areas_desc = pd. read_csv ("brain_areas.tsv", sep = '\t', header = 0)
@@ -189,22 +207,16 @@ if __name__ == '__main__':
 		regions. append (brain_areas_desc . loc [brain_areas_desc ["Code"] == num_region, "Name"]. values [0])
 
 	""" OUTPUT DIRECTORY FOT THE GENERATED TIME SERIES """
-	for dirct in ["Outputs/generated_time_series", "Outputs/generated_time_series/speech", "Outputs/generated_time_series/video", "Outputs/generated_time_series/eyetracking"]:
+	for dirct in ["%s/Outputs"%args.input_dir, out_dir, "%s/Outputs/generated_time_series/speech"%args.input_dir, \
+				 "%s/Outputs/generated_time_series/video"%args.input_dir, "%s/Outputs/generated_time_series/eyetracking"%args.input_dir]:
 		if not os.path.exists (dirct):
 			os.makedirs (dirct)
 
 	""" GENERATE MULTIMODAL TIME SERIES FROM RAW SIGNALS """
-	if not args. predict:
-		print ("0%")
-	speech_left, speech = speech_features (args.pred_module_path, args.generate, "Outputs/generated_time_series/speech")
-	if not args. predict:
-		print ("33%")
-	video = facial_features (args.pred_module_path, args.generate, "Outputs/generated_time_series/video", args.openface_path)
-	if not args. predict:
-		print ("33%")
-	eyetracking = eyetracking_features (args.pred_module_path, args.generate, "Outputs/generated_time_series/eyetracking")
-	if not args. predict:
-		print ("100%")
+	speech_left, speech = speech_features (args.pred_module_path, args.generate, args.input_dir)
+	video = facial_features (args.pred_module_path, args.generate, args.input_dir, args.openface_path)
+	eyetracking = eyetracking_features (args.pred_module_path, args.generate, args.input_dir)
+
 
 	""" CONCATENATE MULTIMODAL DATA """
 	all_data = np. concatenate ((speech_left. values, speech. values[:,1:], video. values[:,1:], eyetracking. values[:,1:]), axis = 1)
@@ -271,5 +283,5 @@ if __name__ == '__main__':
 		for i in range (1, args. lag + len (pred)):
 			index. append (index [i - 1] + step)
 
-		pd. DataFrame (preds, index = index). to_csv ("Outputs/predictions.csv", sep = ';', index_label = ["Time (s)"])
-		preds_var. to_csv ("Outputs/predictors.csv", sep = ';', index = False)
+		pd. DataFrame (preds, index = index). to_csv ("%s/Outputs/predictions.csv"%args.input_dir, sep = ';', index_label = ["Time (s)"])
+		preds_var. to_csv ("%s/Outputs/predictors.csv"%args.input_dir, sep = ';', index = False)

@@ -10,7 +10,7 @@ import nibabel as nib
 import pandas as pd
 import os
 import cv2
-
+import argparse
 
 def get_label_from_roi (brain_area, correspondance_tale):
     return correspondance_tale. loc [correspondance_tale["Name"] == brain_area, "Label"]. values [0]
@@ -114,6 +114,9 @@ def render_brain_image (r_areas_labels, l_areas_labels, r_file, l_file):
 
 """================================================================="""
 if __name__ == '__main__':
+    parser = argparse. ArgumentParser ()
+    parser. add_argument ('--input_dir','-in', help = "path of input directory")
+    args = parser.parse_args()
 
     l_file = "parcellation/lh.BN_Atlas.annot"
     r_file = "parcellation/rh.BN_Atlas.annot"
@@ -121,25 +124,11 @@ if __name__ == '__main__':
     annot_l = nib.freesurfer.io.read_annot (l_file)
     annot_r = nib.freesurfer.io.read_annot (r_file)
 
-    predictions = pd.read_csv ("Outputs/predictions.csv", sep = ';', header = 0)
-
-    # ANNOTATION FILES TO CSV
-    '''if not os.path.exists ("annot_visbrain/r_annot_as_tsv") or not os.path.exists ("annot_visbrain/l_annot_as_tsv"):
-        df_l = pd.DataFrame ()
-        df_r = pd.DataFrame ()
-
-        df_l["Labels"] = annot_l [2]
-        df_l["Colors"] = annot_l [1]. tolist ()
-
-        df_r["Labels"] = annot_r [2]
-        df_r["Colors"] = annot_r [1]. tolist ()
-
-        df_l. to_csv ("annot_visbrain/l_annot_as_tsv", sep = "\t", index = False)
-        df_r. to_csv ("annot_visbrain/r_annot_as_tsv", sep = "\t", index = False)'''
+    predictions = pd.read_csv ("%s/Outputs/predictions.csv"%args.input_dir, sep = ';', header = 0)
 
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     fps = 30
-    out = cv2.VideoWriter ("Outputs/brain_activation.mp4", fourcc, fps, (1400, 1000))
+    out = cv2.VideoWriter ("%s/Outputs/brain_activation.mp4"%args.input_dir, fourcc, fps, (1400, 1000))
 
     brain_areas_csv = pd. read_csv ("brain_areas.tsv", sep = '\t', header = 0)
 
