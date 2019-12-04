@@ -19,16 +19,20 @@ The working directory must be specified and must contain an Inputs folder contai
   * A example is provided in the folder "Demo". To run the example:
 
   ```bash
-  # Generate time series
-  python src/predict.py -rg 1 2 3 4 5 6 -t r -ofp "path_to_openface" -pmp PredictionModule -in Demo -g
-  # Make predictions
-  python src/predict.py -rg 1 2 3 4 5 6 -t r -ofp "path_to_openface" -pmp PredictionModule -in Demo -p
-  # Generate animated prediction in video from the obtained predictions
-  python src/animation.py -in Demo
-  # Using visbrain to visualize the predictions in the brain
-  python src/visualization.py -in Demo
+ # Generate time series
+ python src/generate_time_series.py -rg 1 2 3 4 5 6 -pmp PredictionModule 
+	-in Demo -ofp ../../OpenFace
 
-Required arguments:
+ # Make predictions
+ python src/predict.py -rg 1 2 3 4 5 6 -pmp PredictionModule -in Demo -t r
+
+ # Generate time series video from the obtained predictions
+ python src/animation.py -in Demo
+
+ # Using visbrain to visulize the prediction in the brain
+ python src/visualization.py -in Demo
+
+ Required arguments:
   --regions REGIONS [REGIONS ...], -rg REGIONS [REGIONS ...]
                         Numbers of brain areas to predict (see
                         brain_areas.tsv)
@@ -40,5 +44,6 @@ Required arguments:
                         path of Openface
   --input_dir INPUT_DIR, -in INPUT_DIR
                         path of input directory
-  ```
+```
+  
   * The obtained time series, predictions, and visualization videos are stored in Demo/Outputs.
