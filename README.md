@@ -28,15 +28,17 @@ The working directory must be specified and must contain an Inputs folder contai
   # Using visbrain to visualize the predictions in the brain
   python src/visualization.py -in Demo
 
+Required arguments:
   --regions REGIONS [REGIONS ...], -rg REGIONS [REGIONS ...]
+                        Numbers of brain areas to predict (see
+                        brain_areas.tsv)
   --type TYPE, -t TYPE  conversation type (human or robot)
+
+  --pred_module_path PRED_MODULE_PATH, -pmp PRED_MODULE_PATH
+                        path of the prediction module
   --openface_path OPENFACE_PATH, -ofp OPENFACE_PATH
-                         path of Openface
-   -pred_module_path PRED_MODULE_PATH, -pmp PRED_MODULE_PATH
-                         path of the prediction module
+                        path of Openface
   --input_dir INPUT_DIR, -in INPUT_DIR
-                         path of input directory
-  --generate, -g        generate features from input signals
-  --predict, -p         make predictions
+                        path of input directory
   ```
   * The obtained time series, predictions, and visualization videos are stored in Demo/Outputs.
