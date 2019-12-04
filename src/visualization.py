@@ -1,6 +1,10 @@
-"""
-Parcellize the brain surface using .annot files.
-"""
+'''
+    Author: Youssef Hmamouche
+    Year: 2019
+    Generate video of brain activity predictions
+    This script uses a csv file of predictions, and annotation files for brain parcellation
+'''
+
 import numpy as np
 from visbrain.gui import Brain
 from visbrain.objects import (BrainObj, SceneObj, SourceObj, ConnectObj)
@@ -82,7 +86,6 @@ def render_brain_image (r_areas_labels, l_areas_labels, r_file, l_file):
     obj = BrainObj('inflated', hemisphere='left', translucent=False) #, cblabel='Parcellates example', cbtxtsz=4.)
     #obj_right = BrainObj('inflated', hemisphere='right', translucent=False) #, cblabel='Parcellates example', cbtxtsz=4.)
 
-
     annot_data_l = obj. get_parcellates (l_file)
     annot_data_r = obj. get_parcellates (r_file)
 
@@ -152,6 +155,5 @@ if __name__ == '__main__':
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-    #cv2.imshow ('image',cv2.cvtColor (img, cv2.COLOR_BGR2RGB))
     out.release()
     cv2.destroyAllWindows()
