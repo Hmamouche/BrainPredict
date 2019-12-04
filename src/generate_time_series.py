@@ -117,7 +117,7 @@ def eyetracking_features (pred_path, out_dir):
 if __name__ == '__main__':
 	parser = argparse. ArgumentParser ()
 	requiredNamed = parser.add_argument_group('Required arguments')
-	requiredNamed. add_argument ('--regions','-rg', nargs = '+', type=int)
+	requiredNamed. add_argument ('--regions','-rg', help = "Numbers of brain areas to predict (see brain_areas.tsv)", nargs = '+', type=int)
 	requiredNamed. add_argument ('--openface_path','-ofp', help = "path of Openface", required=True)
 	requiredNamed. add_argument ('--pred_module_path','-pmp', help = "path of the prediction module", required=True)
 	requiredNamed. add_argument ('--input_dir','-in', help = "path of input directory", required=True)
@@ -152,5 +152,3 @@ if __name__ == '__main__':
 	all_data = np. concatenate ((speech_left. values, speech. values[:,1:], video. values[:,1:], eyetracking. values[:,1:]), axis = 1)
 	columns = list (speech_left. columns) +  list (speech. columns [1:]) + list (video. columns [1:]) + list (eyetracking. columns [1:])
 	pd. DataFrame (all_data, columns = columns). to_csv (out_dir + "all_features.csv", sep = ';', index = False)
-
-

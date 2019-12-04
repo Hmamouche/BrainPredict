@@ -11,7 +11,8 @@ import argparse
 
 if __name__ == '__main__':
 	parser = argparse. ArgumentParser ()
-	parser. add_argument ('--input_dir','-in', help = "path of input directory")
+	requiredNamed = parser.add_argument_group('Required arguments')
+	requiredNamed. add_argument ('--input_dir','-in', help = "path of input directory")
 	args = parser.parse_args()
 
 	#colors = ["darkblue", "brown", "slategrey", "darkorange", "red", "grey","blue", "indigo", "darkgreen"]

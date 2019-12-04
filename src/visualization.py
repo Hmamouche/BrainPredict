@@ -118,7 +118,8 @@ def render_brain_image (r_areas_labels, l_areas_labels, r_file, l_file):
 """================================================================="""
 if __name__ == '__main__':
     parser = argparse. ArgumentParser ()
-    parser. add_argument ('--input_dir','-in', help = "path of input directory")
+    requiredNamed = parser.add_argument_group('Required arguments')
+    requiredNamed. add_argument ('--input_dir','-in', help = "path of input directory")
     args = parser.parse_args()
 
     l_file = "parcellation/lh.BN_Atlas.annot"

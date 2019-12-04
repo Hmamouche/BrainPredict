@@ -111,11 +111,12 @@ def get_predictors_dict (model_name, region, type, path):
 #---------------------------------------------------#
 if __name__ == '__main__':
 	parser = argparse. ArgumentParser ()
-	parser. add_argument ('--regions','-rg', nargs = '+', type=int)
-	parser. add_argument ('--type','-t', help = ' conversation type (human or robot)')
-	parser. add_argument ('--lag','-lag', default = 6, type=int)
-	parser. add_argument ('--pred_module_path','-pmp', help = "path of the prediction module")
-	parser. add_argument ('--input_dir','-in', help = "path of input directory")
+	requiredNamed = parser.add_argument_group('Required arguments')
+	requiredNamed. add_argument ('--regions','-rg', help = "Numbers of brain areas to predict (see brain_areas.tsv)", nargs = '+', type=int)
+	requiredNamed. add_argument ('--type','-t', help = ' conversation type (human or robot)')
+	requiredNamed. add_argument ('--lag','-lag', default = 6, type=int)
+	requiredNamed. add_argument ('--pred_module_path','-pmp', help = "path of the prediction module")
+	requiredNamed. add_argument ('--input_dir','-in', help = "path of input directory")
 
 	args = parser.parse_args()
 
