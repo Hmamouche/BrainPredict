@@ -2,8 +2,9 @@ A tool for predicting and visualizing the fMRI brain activity during bidirection
 
 
 ## Dependencies
-  * python>=3.6
-  * Openface is required (https://github.com/TadasBaltrusaitis/OpenFace) to compute facial features from videos.
+  * Python>=3.6
+  * Openface  (https://github.com/TadasBaltrusaitis/OpenFace) is required to compute facial features from videos.
+  * SPASS is required for automatic annotation and segmentation of the speech (a copy is included in the code source of the prediction module).
 
 
 ## Demo: using Qt Creator Interface
@@ -20,7 +21,7 @@ The working directory must be specified and must contain an Inputs folder contai
 
   ```bash
  # Generate time series
- python src/generate_time_series.py -rg 1 2 3 4 5 6 -pmp PredictionModule 
+ python src/generate_time_series.py -rg 1 2 3 4 5 6 -pmp PredictionModule
 	-in Demo -ofp ../../OpenFace
 
  # Make predictions
@@ -45,5 +46,5 @@ The working directory must be specified and must contain an Inputs folder contai
   --input_dir INPUT_DIR, -in INPUT_DIR
                         path of input directory
 ```
-  
+
   * The obtained time series, predictions, and visualization videos are stored in Demo/Outputs.
