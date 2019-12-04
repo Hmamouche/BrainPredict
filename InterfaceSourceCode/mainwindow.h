@@ -9,10 +9,6 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QLabel>
-#include <QItemSelectionModel>
-#include <QMovie>
-#include <QTableWidget>
-#include<QtMultimediaWidgets/qgraphicsvideoitem.h>
 #include<QProcess>
 
 #include "videoplayer.h"
@@ -29,48 +25,44 @@ class MainWindow : public QMainWindow
 private:
     string path;
     QPushButton* button;
-    QItemSelectionModel* selectionModel;
     QLabel* participant;
     QLabel * animation;
-    // vodeis
-    //QMediaPlayer* player;
+
+    /* 4 Video Players */
     VideoPlayer* confederate;
     VideoPlayer* subject;
-    /*VideoPlayer* audioConfederate;
-    VideoPlayer* audioParticipant;*/
     VideoPlayer* predictions;
     VideoPlayer* brainvis;
-    QMovie *movie;
-    QTableWidget * tableWidget;
 
+    /* Widget for tableView */
     QWidget * tableWin;
 
+    /* Process to execute external scripts */
     QProcess * process;
 
     Ui::MainWindow *ui;
 
+    /* Private functions */
     CVString getSelectedItems ();
-
-public:
-    MainWindow (QWidget *parent = nullptr);
     void setWindows ();
     void memory_alloc ();
     void setPredTable ();
     void setVideoPlayers ();
     void setRoisList ();
+
+public:
+    MainWindow (QWidget *parent = nullptr);
+
     ~MainWindow()
     {
         delete button;
-        delete selectionModel;
         delete confederate;
         delete subject;
         delete participant;
         delete predictions;
         delete animation;
         delete brainvis;
-        delete movie;
-        delete tableWidget;
-        delete ui;
+        //delete ui;
 
         delete tableWin;
         delete process;
@@ -83,5 +75,7 @@ private slots:
     void on_selectButton_clicked();
     void on_predictButton_clicked();
     void disp();
+    void on_loadButton_2_clicked();
+    void on_pushButton_4_clicked();
 };
 #endif // MAINWINDOW_H

@@ -1,8 +1,12 @@
-/*
-    charger_csv.h
-    Author: Youssef Hmamouche
-    Year: 2018
-*/
+/************************************
+ **
+ ** charger_csv.h
+ ** Author: Youssef Hmamouche
+ ** Year: 2018
+ ** description: Read a csv file with header in the first line
+ **
+ *************************************/
+
 #include "charger_csv.h"
 #include <QDebug>
 #include<QFile>

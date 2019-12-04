@@ -19,26 +19,13 @@
 #include <QApplication>
 #include <QtWidgets/QApplication>
 #include "mainwindow.h"
-//#include<experimental/filesystem>
-
-//using namespace std;
-//namespace fs = std::experimental::filesystem;
 
 int main(int argc, char *argv[])
 {
 
-    /*string path = fs::current_path();
-    std::cout << path << std::endl;
-    for (const auto & entry : fs::directory_iterator(path + "/Inputs"))
-        std::cout << entry.path() << std::endl;
-
-    exit (1);*/
-
     QApplication app (argc, argv);
     MainWindow *mw = new MainWindow;
     mw->show();
-
-
 
     return app.exec();
 }

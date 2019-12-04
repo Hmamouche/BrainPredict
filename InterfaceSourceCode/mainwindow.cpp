@@ -1,35 +1,29 @@
 /*
+ ** This file is part of BrainPredict.
     Author: Youssef Hmamouche
     Year: 2019
 */
 
 #include<QPixmap>
 #include <QString>
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include<vector>
-#include <iterator>
-#include<iostream>
-#include <string>
-#include<QDir>
-#include<QAbstractItemModel>
 #include<QListWidget>
-#include<QVideoWidget>
-#include<QMediaPlaylist>
-#include<QResource>
+
 #include<QFileDialog>
-#include<iostream>
 #include<QTableView>
 #include<QStandardItemModel>
 #include<QHeaderView>
-#include<QThread>
 
-#include<experimental/filesystem>
 #include <QDebug>
+#include<experimental/filesystem>
+
+#include<vector>
+#include <iterator>
+#include <string>
+
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
 
 namespace fs = std::experimental::filesystem;
-
-using namespace  std;
 
 MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent)
@@ -43,10 +37,9 @@ MainWindow::MainWindow(QWidget *parent):
     setWindows ();
 
     // read working directory, the default path is current dir of the application
-    path = QDir::currentPath(). toStdString();
-
-    connect (process, SIGNAL (started()), this, SLOT(this->ui->predLabel->setText("Running")));
-    connect (process, SIGNAL (finished()), this, SLOT(this->ui->predLabel->setText("... Done")));
+    path = this->ui->textBrowser->toPlainText().toStdString();
+    if (path.length() == 0)
+        path = QDir::currentPath(). toStdString();
 }
 
 void MainWindow::memory_alloc ()
@@ -59,8 +52,6 @@ void MainWindow::memory_alloc ()
     predictions  = new VideoPlayer (this);
     animation = new QLabel (this);
     brainvis = new VideoPlayer (this);
-    selectionModel = new QItemSelectionModel (nullptr, this);
-
     tableWin = new QWidget;
     process = new QProcess (this);
 }
@@ -139,7 +130,7 @@ void MainWindow::setRoisList ()
 
     this->ui->listWidget->clear();
     this->ui->listWidget->addItems(strList);
-    QListWidgetItem* item = 0;
+    QListWidgetItem* item = nullptr;
     for(int i = 0; i < this->ui->listWidget->count(); ++i){
         item = this->ui->listWidget->item(i);
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
@@ -149,21 +140,27 @@ void MainWindow::setRoisList ()
 
 CVString MainWindow::getSelectedItems()
 {
+    CMatString mat;
+    CVString header = read_csv (mat, ":/brain_areas.tsv", '\t');
+    CVString areasNumbers;
+
     CVString items;
-    QListWidgetItem* item = 0;
+    QListWidgetItem* item = nullptr;
     for(int i = 0; i < this->ui->listWidget->count(); ++i){
         item = this->ui->listWidget->item(i);
         if(item->checkState() == Qt::Checked)
             items.push_back( item->text().toStdString());
     }
-    return items;
-}
 
-void MainWindow::on_loadButton_clicked()
-{
-    QString dirName = QFileDialog::getExistingDirectory(this);
-    this->ui->textBrowser->setText(dirName);
-    path = dirName.toStdString();
+    for (string &item:items)
+    {
+        for (unsigned i = 0; i < mat.size(); ++i)
+        {
+            if (mat[i][0] == item)
+                areasNumbers. push_back (mat[i][1]);
+        }
+     }
+    return areasNumbers;
 }
 
 void MainWindow::on_simulationButton_clicked()
@@ -199,55 +196,99 @@ void MainWindow::setPredTable()
     tableWin->setWindowTitle("Predictors Table");
 
     QTableView * tableWidget = new QTableView;
-    QStandardItemModel* model = new QStandardItemModel(1,rois.size(),this);
+    QStandardItemModel* model = new QStandardItemModel(1, int (rois.size()),this);
 
 
     model->setHorizontalHeaderLabels(strList);
     for (unsigned i = 0; i < mat.size(); ++i)
         for (unsigned j = 0; j < mat[i].size(); ++j){
-            model->setItem(i, j, new QStandardItem(QString::fromStdString(mat[i][j])));
+            model->setItem(int (i), int (j), new QStandardItem(QString::fromStdString(mat[i][j])));
         }
 
-    //QGridLayout *layout = new QGridLayout;
     tableWidget->setWindowTitle("Predictors Table");
     tableWidget->setModel(model);
-    //tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    //tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    /*layout->addWidget(tableWidget);
-    tableWin->setLayout(layout);
-    layout->setSizeConstraint(QLayout::SetMinAndMaxSize);*/
+
+    tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+     tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
     tableWidget-> show ();
-}
-
-void MainWindow::on_predictButton_clicked()
-{
-    QString ex = QString::fromStdString ("sh predict.sh");
-    process->setWorkingDirectory (QString::fromStdString (path));
-
-    qDebug () << ex << endl;
-    process->start (ex);
-    process->waitForStarted();
-
-    qDebug () << "Running" << endl;
-    //this->ui->predLabel->setText("Running");
-    process->waitForFinished();
-    qDebug () << process->readAll() << endl;
-    qDebug () << "Done" << endl;
-    this->ui->predLabel->setText("Done ...");
-
-    process->close();
 }
 
 void MainWindow :: disp()
 {
-    /*int t;
-    t = process->readAllStandardOutput(). toInt();
-    // this->ui->progressBar->setValue (t);
-    cout << t <<endl;
-   // this->ui->progressBar->setValue (t);*/
     this->ui->predLabel->clear();
     this->ui->predLabel->setText("Running ...");
     this->ui->predLabel->update();
+}
 
-    //this->ui->text->setText("Running ...");
+void MainWindow::on_loadButton_clicked()
+{
+    QString dirName = QFileDialog::getExistingDirectory(this);
+    this->ui->textBrowser->setText(dirName);
+    path = dirName.toStdString();
+}
+void MainWindow::on_loadButton_2_clicked()
+{
+    QString dirName = QFileDialog::getExistingDirectory(this);
+    this->ui->textBrowser_2->setText(dirName);
+    path = dirName.toStdString();
+}
+
+//  Make predictions when clicked
+void MainWindow::on_predictButton_clicked()
+{
+    // Get number of selected regions, and join them with space
+    CVString selectedAreas = getSelectedItems();
+    string areas ("");
+    for (auto area : selectedAreas)
+            areas += area + " ";
+
+    // get the conversation type from the combobox
+    string conversType = this->ui->comboBox->currentText(). toStdString();
+    if (conversType == "Human-human")
+        conversType = "h";
+    else if (conversType == "Human-robot")
+        conversType = "r";
+
+    // Construct the argument for predict.py file
+    QString script = QString::fromStdString  ("python src/predict.py -rg " + areas +
+                    " -t " + conversType +
+                    "-pmp PredictionModule -in " + path);
+
+    // Execute the script
+    qDebug () << script << endl;
+    process->execute (script);
+    process->waitForFinished();
+    qDebug () << "Done" << endl;
+    this->ui->predLabel->setText("Done ...");
+    process->close();
+}
+
+// Generate time series when clicked
+void MainWindow::on_pushButton_4_clicked()
+{
+    QString ex = QString::fromStdString ("sh test.sh");
+
+    // Get number of selected regions, and join them with space
+    CVString selectedAreas = getSelectedItems();
+    string areas ("");
+    for (auto area : selectedAreas)
+            areas += area + " ";
+
+    // Get OpenFace path from textbrowser
+    string openFacePath = this->ui->textBrowser_2->toPlainText().toStdString();
+
+    // Construct the argument for predict.py file
+    QString script = QString::fromStdString  ("python src/generate_time_series.py -rg " + areas +
+                    " -ofp " + openFacePath +
+                    " -pmp PredictionModule -in " + path);
+
+    // Execute the script
+    qDebug () << script << endl;
+    process->execute (script);
+    process->waitForStarted();
+    process->waitForFinished();
+    qDebug () << process->readAll() << endl;
+    this->ui->generateLabel->setText("Done ...");
+    process->close();
 }
