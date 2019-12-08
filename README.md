@@ -1,4 +1,4 @@
-A tool for predicting and visualizing the fMRI brain activity during bidirectional conversations of type human-human or human-machine. The current version of the executable of the interface "BrainPredict" is compiled in Linux, nevertheless, the code source is provided on Qt with C++17 for compilation on other systems. While the prediction module is implemented in Python3, and can be executed from terminal or using the interface.
+A tool for predicting and visualizing the fMRI brain activity during bidirectional conversations of type human-human or human-machine. The current version of the executable of the interface "BrainPredict" is compiled in Linux, nevertheless, the code source is provided on Qt with C++17 for compilation on other systems. While the prediction module is implemented in Python3, and can be executed from terminal or using the interface. The conversation's language required by the current version are only french and english.
 
 
 ## Dependencies
