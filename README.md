@@ -21,7 +21,7 @@ The working directory must be specified and must contain an Inputs folder contai
 
   ```bash
  # Generate time series
- python src/generate_time_series.py -rg 1 2 3 4 5 6 -pmp PredictionModule
+ python src/generate_time_series.py -rg 1 2 3 4 5 6 -lg fr -pmp PredictionModule
 	-in Demo -ofp ../../OpenFace
 
  # Make predictions
