@@ -44,6 +44,10 @@ MAIN_FEEDBACK_ITEMS = [u"mh",u"ouais",u"oui",u'non',u'ah',u"mouais"]+ OK_FORMS +
 MAIN_DISCOURSE_ITEMS = [u"alors",u"mais",u"donc",u'et',u'puis',u'enfin',u'parceque',u'parcequ',u'ensuite']
 MAIN_PARTICLES_ITEMS = [u"quoi",u"hein",u"bon",u'mais',u'ben',u'beh',u'enfin',u'vois',u'putain',u'bref']
 
+MAIN_FEEDBACK_ITEMS_ENG = [u"mh",u"yes",u"yeah",u'no',u'ah']+ OK_FORMS  + [u"right"] + LAUGHTER_FORMS
+MAIN_DISCOURSE_ITEMS_ENG = [u"so",u"but",u"therefore",u'and',u'then',u'finally',u'because',u'parcequ',u'after']
+MAIN_PARTICLES_ITEMS_ENG = [u"what",u"hein",u"well",u'but',u'ben',u'finally',u'short']
+
 colors = ["black", "darkblue", "brown", "red", "slategrey", "darkorange", "grey","blue", "indigo", "darkgreen"]
 
 
@@ -175,7 +179,7 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument("data_dir", help="the path of the file to process.")
 	parser.add_argument("out_dir", help="the path where to store the results.")
-	parser. add_argument ("--rename", "-ren", help = "rename output files", action="store_true")
+	parser.add_argument("--language", "-lg", default = "fr", choices = ["fr", "eng"], help="Language.")
 	parser.add_argument("--left", "-l", help="Process participant speech.", action="store_true")
 
 	args = parser.parse_args()
@@ -198,7 +202,7 @@ if __name__ == '__main__':
 
 	conversation_name = data_dir.split ('/')[-1]
 
-	if conversation_name == "" or args. rename:
+	if conversation_name == "":
 		if args. left:
 			conversation_name = "speech_features_left"
 		else:
@@ -277,7 +281,10 @@ if __name__ == '__main__':
 		signal_x. append (step_signal + signal_x[i-1])
 
 	# Select language
-	nlp = sp.load('fr_core_news_sm')
+	if args. language == "fr":
+		nlp = sp.load('fr_core_news_sm')
+	elif args. language == "eng":
+		nlp = sp.load('en_core_web_sm')
 
 	# Read TextGrid files
 	# get the left part of the transcription
@@ -328,10 +335,16 @@ if __name__ == '__main__':
 		tier_align = parser. read(). find ("TokensAlign")
 
 	# Time of Filled breaks, feed_backs
-	filled_breaks = ts. get_durations (tier_align, list_of_tokens =  FILLED_PAUSE_ITEMS)
-	main_feed_items = ts. get_durations (tier_align, list_of_tokens =  MAIN_FEEDBACK_ITEMS)
-	main_discourse_items = ts. get_durations (tier_align, list_of_tokens =  MAIN_DISCOURSE_ITEMS)
-	laughters = ts. get_durations (tier_align, list_of_tokens =  LAUGHTER_FORMS)
+	if args. language == "fr":
+		filled_breaks = ts. get_durations (tier_align, list_of_tokens =  FILLED_PAUSE_ITEMS)
+		main_feed_items = ts. get_durations (tier_align, list_of_tokens =  MAIN_FEEDBACK_ITEMS)
+		main_discourse_items = ts. get_durations (tier_align, list_of_tokens =  MAIN_DISCOURSE_ITEMS)
+		laughters = ts. get_durations (tier_align, list_of_tokens =  LAUGHTER_FORMS)
+	elif args. language == "eng":
+		filled_breaks = ts. get_durations (tier_align, list_of_tokens =  FILLED_PAUSE_ITEMS_ENG)
+		main_feed_items = ts. get_durations (tier_align, list_of_tokens =  MAIN_FEEDBACK_ITEMS_ENG)
+		main_discourse_items = ts. get_durations (tier_align, list_of_tokens =  MAIN_DISCOURSE_ITEMS_ENG)
+		laughters = ts. get_durations (tier_align, list_of_tokens =  LAUGHTER_FORMS)
 
 
 	""" handle particle items separately as continuous time series """

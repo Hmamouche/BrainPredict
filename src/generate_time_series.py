@@ -38,7 +38,7 @@ def get_predictors_dict (model_name, region, type, path):
     return predictors
 
 #---------------------------------------------------#
-def speech_features (pred_path, out_dir):
+def speech_features (pred_path, out_dir, language):
 	"""
 	generate speech features from audio files
 	pred_path: path of the prediction module
@@ -49,13 +49,17 @@ def speech_features (pred_path, out_dir):
 	audio_input = "%s/Inputs/speech"%out_dir
 	audio_output = "%s/Outputs/generated_time_series/speech"%out_dir
 
+	if language == "fr":
+		lang = "fra"
+	elif language == "eng":
+		lang = "eng"
 
-	'''os. system ("python %s/src/utils/SPPAS/sppas/bin/normalize.py -r %s/src/utils/SPPAS/resources/vocab/eng.vocab -I %s  -l fra -e .TextGrid --quiet"%(pred_path, pred_path, audio_input))
-	os. system ("python %s/src/utils/SPPAS/sppas/bin/phonetize.py  -I %s -l fra -e .TextGrid"%(pred_path, audio_input))
-	os. system ("python %s/src/utils/SPPAS/sppas/bin/alignment.py  -I %s -l fra -e .TextGrid --aligner basic"%(pred_path, audio_input))'''
+	os. system ("python %s/src/utils/SPPAS/sppas/bin/normalize.py -r %s/src/utils/SPPAS/resources/vocab/eng.vocab -I %s  -l %s -e .TextGrid --quiet"%(pred_path, pred_path, audio_input, lang))
+	os. system ("python %s/src/utils/SPPAS/sppas/bin/phonetize.py  -I %s -l %s -e .TextGrid"%(pred_path, audio_input, lang))
+	os. system ("python %s/src/utils/SPPAS/sppas/bin/alignment.py  -I %s -l %s -e .TextGrid --aligner basic"%(pred_path, audio_input, lang))
 
-	out = os. system ("python %s/src/generate_ts/speech_features.py %s %s/ -ren"%(pred_path, audio_input, audio_output))
-	out = os. system ("python %s/src/generate_ts/speech_features.py %s %s/ -l -ren"%(pred_path, audio_input, audio_output))
+	out = os. system ("python %s/src/generate_ts/speech_features.py %s %s/ -lg %s"%(pred_path, audio_input, audio_output, language))
+	out = os. system ("python %s/src/generate_ts/speech_features.py %s %s/ -l -lg %s"%(pred_path, audio_input, audio_output, language))
 
 	if out_dir[-1] != '/':
 		out_dir += '/'
@@ -118,6 +122,7 @@ if __name__ == '__main__':
 	parser = argparse. ArgumentParser ()
 	requiredNamed = parser.add_argument_group('Required arguments')
 	requiredNamed. add_argument ('--regions','-rg', help = "Numbers of brain areas to predict (see brain_areas.tsv)", nargs = '+', type=int)
+	requiredNamed.add_argument("--language", "-lg", default = "fr", choices = ["fr", "eng"], help="Language.")
 	requiredNamed. add_argument ('--openface_path','-ofp', help = "path of Openface", required=True)
 	requiredNamed. add_argument ('--pred_module_path','-pmp', help = "path of the prediction module", required=True)
 	requiredNamed. add_argument ('--input_dir','-in', help = "path of input directory", required=True)
@@ -143,7 +148,7 @@ if __name__ == '__main__':
 			os.makedirs (dirct)
 
 	""" GENERATE MULTIMODAL TIME SERIES FROM RAW SIGNALS """
-	speech_left, speech = speech_features (args.pred_module_path, args.input_dir)
+	speech_left, speech = speech_features (args.pred_module_path, args.input_dir, args. language)
 	video = facial_features (args.pred_module_path, args.input_dir, args.openface_path)
 	eyetracking = eyetracking_features (args.pred_module_path, args.input_dir)
 
