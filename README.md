@@ -9,8 +9,14 @@ A tool for predicting and visualizing the fMRI brain activity during bidirection
 
 ## Demo: using Qt Creator Interface
 The working directory must be specified and must contain an Inputs folder containing speech, eyetracking, and video folders.
+First, install the following requirements:
 
+```bash
+ sudo apt-get install qtmultimedia5-dev libqt5multimediawidgets5 libqt5multimedia5-plugins libqt5multimedia5
+ ```
+Then run the executable after setting the execution rights:
   ```bash
+  chmod +x BrainPredict
   ./BrainPredict
   ```
 
