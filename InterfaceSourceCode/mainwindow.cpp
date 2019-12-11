@@ -1,7 +1,7 @@
 /*
  ** This file is part of BrainPredict.
-    Author: Youssef Hmamouche
-    Year: 2019
+ ** Author: Youssef Hmamouche
+ ** Year: 2019
 */
 
 #include<QPixmap>
@@ -131,6 +131,7 @@ void MainWindow::setRoisList ()
     this->ui->listWidget->clear();
     this->ui->listWidget->addItems(strList);
     QListWidgetItem* item = nullptr;
+
     for(int i = 0; i < this->ui->listWidget->count(); ++i){
         item = this->ui->listWidget->item(i);
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);

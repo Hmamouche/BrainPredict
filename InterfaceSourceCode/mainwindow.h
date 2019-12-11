@@ -1,7 +1,9 @@
-/*
-    Author: Youssef Hmamouche
-    Year: 2019
-*/
+/*******************************
+ **
+ ** Author: Youssef Hmamouche
+ ** Year: 2019
+ **
+********************************/
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -63,7 +65,6 @@ public:
         delete animation;
         delete brainvis;
         //delete ui;
-
         delete tableWin;
         delete process;
     }
