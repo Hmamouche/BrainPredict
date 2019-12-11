@@ -17,7 +17,7 @@ First, install the following requirements:
 Then run the executable after setting the execution rights:
   ```bash
   chmod +x BrainPredict
-  ./BrainPredict
+  sh BrainPredict sh
   ```
 
 ## Demo: using the command line
