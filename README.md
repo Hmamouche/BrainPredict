@@ -12,7 +12,7 @@ A tool for predicting and visualizing the fMRI brain activity during bidirection
   * Spacy French dictionary:
   ```bash
     python -m spacy download fr_core_news_sm
-    ```
+   ```
     
 ## Demo: using Qt Creator Interface
 The working directory must be specified and must contain an Inputs folder containing speech, eyetracking, and video folders.
