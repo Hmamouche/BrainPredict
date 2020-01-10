@@ -5,6 +5,10 @@ A tool for predicting and visualizing the fMRI brain activity during bidirection
   * Python>=3.6
   * Openface  (https://github.com/TadasBaltrusaitis/OpenFace) is required to compute facial features from videos.
   * SPPAS (http://www.sppas.org/) is required for automatic annotation and segmentation of the speech (a copy is included in the code source of the prediction module).
+  * FFmpeg multimedia frameworks
+   ```bash
+    sudo apt install ffmpeg
+   ```
   * Python packages:
     ```bash
     pip install -r requirements.txt
