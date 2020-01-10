@@ -1,12 +1,23 @@
 A tool for predicting and visualizing the fMRI brain activity during bidirectional conversations of type human-human or human-machine. The current version of the executable of the interface "BrainPredict" is compiled in Linux, nevertheless, the code source is provided on Qt with C++17 for compilation on other systems. While the prediction module is implemented in Python3, and can be executed from terminal or using the interface. The conversation's language required by the current version are only french and english.
 
 
-## Dependencies
+## Requirements
   * Python>=3.6
   * Openface  (https://github.com/TadasBaltrusaitis/OpenFace) is required to compute facial features from videos.
   * SPPAS (http://www.sppas.org/) is required for automatic annotation and segmentation of the speech (a copy is included in the code source of the prediction module).
-
-
+  * FFmpeg multimedia framework: 
+   ```bash
+    sudo apt install ffmpeg
+   ```
+  * Python packages:
+    ```bash
+    pip install -r requirements.txt
+    ```
+  * Spacy French dictionary:
+  ```bash
+    python -m spacy download fr_core_news_sm
+   ```
+    
 ## Demo: using Qt Creator Interface
 The working directory must be specified and must contain an Inputs folder containing speech, eyetracking, and video folders.
 First, install the following requirements:
