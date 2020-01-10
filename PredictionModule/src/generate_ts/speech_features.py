@@ -181,6 +181,7 @@ if __name__ == '__main__':
 	parser.add_argument("out_dir", help="the path where to store the results.")
 	parser.add_argument("--language", "-lg", default = "fr", choices = ["fr", "eng"], help="Language.")
 	parser.add_argument("--left", "-l", help="Process participant speech.", action="store_true")
+	parser.add_argument("--outname", "-n", help="Rename output file names by default.", action="store_true")
 
 	args = parser.parse_args()
 
@@ -202,7 +203,7 @@ if __name__ == '__main__':
 
 	conversation_name = data_dir.split ('/')[-1]
 
-	if conversation_name == "":
+	if conversation_name == "" or args. outname:
 		if args. left:
 			conversation_name = "speech_features_left"
 		else:

@@ -58,8 +58,8 @@ def speech_features (pred_path, out_dir, language):
 	os. system ("python %s/src/utils/SPPAS/sppas/bin/phonetize.py  -I %s -l %s -e .TextGrid"%(pred_path, audio_input, lang))
 	os. system ("python %s/src/utils/SPPAS/sppas/bin/alignment.py  -I %s -l %s -e .TextGrid --aligner basic"%(pred_path, audio_input, lang))
 
-	out = os. system ("python %s/src/generate_ts/speech_features.py %s %s/ -lg %s"%(pred_path, audio_input, audio_output, language))
-	out = os. system ("python %s/src/generate_ts/speech_features.py %s %s/ -l -lg %s"%(pred_path, audio_input, audio_output, language))
+	out = os. system ("python %s/src/generate_ts/speech_features.py %s %s/ -lg %s -n"%(pred_path, audio_input, audio_output, language))
+	out = os. system ("python %s/src/generate_ts/speech_features.py %s %s/ -l -lg %s -n"%(pred_path, audio_input, audio_output, language))
 
 	if out_dir[-1] != '/':
 		out_dir += '/'
@@ -69,26 +69,35 @@ def speech_features (pred_path, out_dir, language):
 
 #---------------------------------------------------#
 def facial_features (pred_path, out_dir, openface_path):
-	""" facial features  """
+    """ facial features  """
 
-	#video_input = "%s/Inputs/video"%out_dir
-	video_output = "%s/Outputs/generated_time_series/video"%out_dir
-	video_path = glob.glob ("%s/Inputs/video/*.avi"%out_dir)
-	if len (video_path) == 0:
-		print ("Error: there no input video!")
-		exit (1)
-	else:
-		video_path = video_path[0]
+    #video_input = "%s/Inputs/video"%out_dir
+    video_output = "%s/Outputs/generated_time_series/video/"%out_dir
+    video_path = glob.glob ("%s/Inputs/video/*.avi"%out_dir)
 
+    energy_output = "%s/Outputs/generated_time_series/video/"%out_dir
 
-	if out_dir[-1] != '/':
-		out_dir += '/'
+    if len (video_path) == 0:
+    	print ("Error: there no input video!")
+    	exit (1)
+    else:
+    	video_path = video_path[0]
 
-	out = os. system ("python %s/src/generate_ts/facial_action_units.py %s %s -op %s"%(pred_path, video_path, video_output, openface_path))
+    video_name = video_path. split ('/')[-1]. split ('.')[0]
+    #openface_csv_file = "%s/Outputs/generated_time_series/video/%/%.csv"%(out_dir,video_name)
+    openface_features = glob.glob (video_output + "/" + video_path[:-4]. split ('/')[-1] + "/*.csv")[0]
 
-	video_features = glob.glob (video_output + "/*.pkl")[0]
-	video_feats = pd. read_pickle (video_features)
-	return video_feats
+    if out_dir[-1] != '/':
+    	out_dir += '/'
+
+    os. system ("python %s/src/generate_ts/facial_action_units.py %s %s -op %s"%(pred_path, video_path, video_output, openface_path))
+
+    os. system ("python %s/src/generate_ts/energy.py %s %s -faf %s -d"%(pred_path, video_path, energy_output, openface_features))
+
+    video_features = glob.glob (video_output + "/*.pkl")
+    video_feats = pd. read_pickle (video_features[0])
+    facial_feats = pd. read_pickle (video_features[1])
+    return pd.concat ([video_feats, facial_feats], axis = 1)
 
 #---------------------------------------------------#
 def eyetracking_features (pred_path, out_dir):

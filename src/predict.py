@@ -110,88 +110,96 @@ def get_predictors_dict (model_name, region, type, path):
 
 #---------------------------------------------------#
 if __name__ == '__main__':
-	parser = argparse. ArgumentParser ()
-	requiredNamed = parser.add_argument_group('Required arguments')
-	requiredNamed. add_argument ('--regions','-rg', help = "Numbers of brain areas to predict (see brain_areas.tsv)", nargs = '+', type=int)
-	requiredNamed. add_argument ('--type','-t', help = ' conversation type (human or robot)')
-	requiredNamed. add_argument ('--lag','-lag', default = 6, type=int)
-	requiredNamed. add_argument ('--pred_module_path','-pmp', help = "path of the prediction module")
-	requiredNamed. add_argument ('--input_dir','-in', help = "path of input directory")
+    parser = argparse. ArgumentParser ()
+    requiredNamed = parser.add_argument_group('Required arguments')
+    requiredNamed. add_argument ('--regions','-rg', help = "Numbers of brain areas to predict (see brain_areas.tsv)", nargs = '+', type=int)
+    requiredNamed. add_argument ('--type','-t', help = ' conversation type (human or robot)')
+    requiredNamed. add_argument ('--lag','-lag', default = 6, type=int)
+    requiredNamed. add_argument ('--pred_module_path','-pmp', help = "path of the prediction module")
+    requiredNamed. add_argument ('--input_dir','-in', help = "path of input directory")
 
-	args = parser.parse_args()
+    args = parser.parse_args()
 
-	if args. pred_module_path [-1] == '/':
-		args. pred_module_path = args. pred_module_path [:-1]
+    if args. pred_module_path [-1] == '/':
+    	args. pred_module_path = args. pred_module_path [:-1]
 
-	out_dir =  "%s/Outputs/generated_time_series/"%args.input_dir
+    out_dir =  "%s/Outputs/generated_time_series/"%args.input_dir
 
-	# GET REGIONS NAMES FOR THEIR CODES
-	brain_areas_desc = pd. read_csv ("brain_areas.tsv", sep = '\t', header = 0)
+    # GET REGIONS NAMES FOR THEIR CODES
+    brain_areas_desc = pd. read_csv ("brain_areas.tsv", sep = '\t', header = 0)
 
-	regions = []
-	for num_region in args. regions:
-		regions. append (brain_areas_desc . loc [brain_areas_desc ["Code"] == num_region, "Name"]. values [0])
+    regions = []
+    for num_region in args. regions:
+    	regions. append (brain_areas_desc . loc [brain_areas_desc ["Code"] == num_region, "Name"]. values [0])
 
-	# WRIGHT MULTIMODAL TIME SERIES TO CSV FILE
-	all_data = pd. read_csv ("%s/Outputs/generated_time_series/all_features.csv"%args.input_dir, sep = ';', header = 0)
-	columns = all_data. columns
+    # WRIGHT MULTIMODAL TIME SERIES TO CSV FILE
+    all_data = pd. read_csv ("%s/Outputs/generated_time_series/all_features.csv"%args.input_dir, sep = ';', header = 0)
+    columns = all_data. columns
 
-	print ("0")
-	lagged_names = []
-	for col in columns [1: ]:
-		lagged_names. extend ([col + "_t%d"%(p) for p in range (args. lag, 2, -1)])
+    print ("0")
+    lagged_names = []
+    for col in columns [1: ]:
+    	lagged_names. extend ([col + "_t%d"%(p) for p in range (args. lag, 2, -1)])
 
-	all_data = pd. DataFrame (toSuppervisedData (all_data. values, args. lag). data, columns = lagged_names)
+    all_data = pd. DataFrame (toSuppervisedData (all_data. values, args. lag). data, columns = lagged_names)
 
-	""" load the best models for each regions """
-	if args. type == 'h':
-		conversation_type = 'HH'
-	elif args. type == 'r':
-		conversation_type = 'HR'
-	else:
-		print ("Error in arguments, type of conversation missing, use -h for help!")
-		exit (1)
+    """ load the best models for each regions """
+    if args. type == 'h':
+    	conversation_type = 'HH'
+    elif args. type == 'r':
+    	conversation_type = 'HR'
+    else:
+    	print ("Error in arguments, type of conversation missing, use -h for help!")
+    	exit (1)
 
-	trained_models = glob. glob ("%s/trained_models/*%s.pkl"%(args.pred_module_path,conversation_type))
+    trained_models = glob. glob ("%s/trained_models/*%s.pkl"%(args.pred_module_path,conversation_type))
 
-	# dictionary of predictions: results
-	preds = {}
-	predictors_variables = {}
-	nb_r = 1
-	for region in regions:
-		predictors_data = pd. DataFrame ()
-		predictors_data. columns = []
-		fname = ""
-		for filename in trained_models:
-			if region in  filename:
-				fname = filename
-				break
+    # dictionary of predictions: results
+    preds = {}
+    predictors_variables = {}
+    nb_r = 1
+    for region in regions:
+        predictors_data = pd. DataFrame ()
+        predictors_data. columns = []
+        fname = ""
+        for filename in trained_models:
+        	if region in  filename:
+        		fname = filename
+        		break
 
-		model_name = fname. split ('/')[-1]. split ('_') [0]
-		#print (model_name)
-		model = joblib.load (fname)
+        model_name = fname. split ('/')[-1]. split ('_') [0]
+        #print (model_name)
+        model = joblib.load (fname)
 
-		predictors = literal_eval (get_predictors_dict (model_name, region, args. type, args.pred_module_path))
-		#print ("Predictors time series: ", predictors, "\n -------------")
+        predictors = literal_eval (get_predictors_dict (model_name, region, args. type, args.pred_module_path))
+        #print ("Predictors time series: ", predictors, "\n -------------")
 
-		predictors_data = all_data. loc [:, predictors]
+        predictors_data = all_data. loc [:, predictors]
 
-		pred = model. predict (predictors_data)
+        #if "DummyClassifier"  in str (model):
+            #continue
 
-		preds [region] = [0 for i in range (args. lag)] + pred. tolist ()
-		predictors_variables [region] = literal_eval (get_predictors (model_name, region, args. type, args.pred_module_path))
-		#print (region, "\n", 18 * '-')
-		print (int (100 * float (nb_r) / len (regions)))
-		nb_r += 1
-	preds_var = pd.DataFrame ()
-	for col in predictors_variables. keys ():
-		preds_var[col] = [str (predictors_variables [col])]
+        try:
+            pred = model. predict (predictors_data)
+        except:
+            print ("Error in prediction model of ROI %s"%region)
+            continue
 
-	# time index : fMRI recording frequency
-	step = 1.205
-	index = [step]
-	for i in range (1, args. lag + len (pred)):
-		index. append (index [i - 1] + step)
+        preds [region] = [0 for i in range (args. lag)] + pred. tolist ()
+        predictors_variables [region] = literal_eval (get_predictors (model_name, region, args. type, args.pred_module_path))
+        #print (region, "\n", 18 * '-')
+        print (int (100 * float (nb_r) / len (regions)))
+        nb_r += 1
 
-	pd. DataFrame (preds, index = index). to_csv ("%s/Outputs/predictions.csv"%args.input_dir, sep = ';', index_label = ["Time (s)"])
-	preds_var. to_csv ("%s/Outputs/predictors.csv"%args.input_dir, sep = ';', index = False)
+    preds_var = pd.DataFrame ()
+    for col in predictors_variables. keys ():
+    	preds_var[col] = [str (predictors_variables [col])]
+
+    # time index : fMRI recording frequency
+    step = 1.205
+    index = [step]
+    for i in range (1, args. lag + len (pred)):
+    	index. append (index [i - 1] + step)
+
+    pd. DataFrame (preds, index = index). to_csv ("%s/Outputs/predictions.csv"%args.input_dir, sep = ';', index_label = ["Time (s)"])
+    preds_var. to_csv ("%s/Outputs/predictors.csv"%args.input_dir, sep = ';', index = False)

@@ -1,4 +1,32 @@
 import numpy as np
+import math
+import scipy.stats as sc
+
+#========================================
+def compute_energy (x, rotation = False):
+    """
+        Compute the sum of squared differences: proportional to the kinetic enery of a variable
+        x: np array
+        rotation: if True  the values are considered as rotations in degree
+    """
+
+    if len (x) == 1:
+        return 0
+    k_energy = 0
+
+    for i in range (x. shape [1]):
+        # if rotation is True, we transform rotations from degree to radian
+        if rotation:
+            vect = [math. radians (a) for a in x[:,i]]
+        else:
+            # convert pixel to m]
+            #vect = [a * 0.0002645833  for a in x[:,i]]
+            #vect = x[:,i]
+            vect = [a * 0.2645833  for a in x[:,i]]
+
+        k_energy += np. sum (np. square (np. diff (vect)))
+
+    return k_energy
 
 #==========================================
 def regroupe_data (list_, mode):
@@ -6,21 +34,26 @@ def regroupe_data (list_, mode):
         reducing a list of lists into one list by means of
         mean, mode, max, or binary
     """
-    for row in list_:
-    	if mode == "mean":
-    	    return np.nanmean (list_, axis=0). tolist ()
-    	elif mode == "max":
-    	    return np.nanmax (list_, axis=0). tolist ()
-    	elif mode == "mode":
-    	    return sc_mode (list_, axis=0, nan_policy = 'omit')[0][0]. tolist ()
-    	elif mode == "binary":
-    		res = np.nanmean (list_, axis=0). tolist ()
-    		for i in range (len (res)):
-    			if res [i] > 0:
-    				res [i] = 1
-    			else:
-    				res [i] = 0
-    		return res
+
+    if mode == "mean":
+        return np.nanmean (list_, axis=0). tolist ()
+    elif mode == "std":
+        return np.std (list_, axis=0). tolist ()
+    elif mode == "max":
+        return np.nanmax (list_, axis=0). tolist ()
+    elif mode == "mode":
+        return sc.mode (list_, axis=0, nan_policy = 'omit')[0][0]. tolist ()
+    elif mode == "binary":
+        res = np.nanmean (list_, axis=0). tolist ()
+        for i in range (len (res)):
+            if res [i] > 0:
+                res [i] = 1
+            else:
+                res [i] = 0
+        return res
+    elif mode == "energy":
+        return [compute_energy (np. array (list_))]
+
 
 #=============================================================
 def resample_ts (data, index, mode = "mean"):

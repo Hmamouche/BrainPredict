@@ -20,12 +20,16 @@ if __name__ == '__main__':
 	# READ PREDICTIONS
 	df = pd. read_csv ("%s/Outputs/predictions.csv"%args.input_dir, sep = ';', header = 0, index_col = 0)
 	regions = df. columns
+	print (regions)
 	index = df. index
 	title = 'Brain activity predictions'
 
 	ROIS_desc = pd. read_csv ("brain_areas.tsv", sep = '\t', header = 0)
 
-	colors_of_rois = ROIS_desc. loc [ROIS_desc["Name"] == regions, "Color"]
+	colors_of_rois =  []
+	for region in regions:
+		colors_of_rois. append (ROIS_desc. loc [ROIS_desc["Name"] == region, "Color"]. values[0])
+
 
 	for i in range (len (colors_of_rois)):
 		colors_of_rois[i] = literal_eval (colors_of_rois[i])[0:3]
@@ -66,8 +70,8 @@ if __name__ == '__main__':
 			ax[j]. plot (index [:i], df. iloc [:i, j], linewidth = 2, color = colors_of_rois [j], alpha = 1)
 		camera.snap()
 
-	animation = camera.animate (repeat = False, interval = 1205)
+	anim = camera.animate (repeat = False, interval = 1205)
 
-	animation.save("%s/Outputs/predictions_video.mp4"%args.input_dir)
+	anim.save("%s/Outputs/predictions_video.mp4"%args.input_dir, extra_args=['-vcodec', 'h264', '-pix_fmt', 'yuv420p'])
 	fig. savefig ("%s/Outputs/predictions.png"%args.input_dir)
 	#plt. show ()
