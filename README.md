@@ -5,31 +5,33 @@ A tool for predicting and visualizing the fMRI brain activity during bidirection
   * Python>=3.6
   * Openface  (https://github.com/TadasBaltrusaitis/OpenFace) is required to compute facial features from videos.
   * SPPAS (http://www.sppas.org/) is required for automatic annotation and segmentation of the speech (a copy is included in the code source of the prediction module).
-  * FFmpeg multimedia framework:
-   ```bash
-    sudo apt install ffmpeg
+  * The FFmpeg multimedia framework:
+    ```bash
+      sudo apt-get install ffmpeg
    ```
   * Python packages:
     ```bash
-    pip install -r requirements.txt
+      pip install -r requirements.txt
     ```
-    * Spacy  models:
+  * Spacy  models:
     ```bash
-      python -m spacy download fr_core_news_sm
-      python -m spacy download en_core_web_sm
-     ```
+        python -m spacy download fr_core_news_sm
+        python -m spacy download en_core_web_sm
+    ```
 
 ## Demo: using Qt Creator Interface
 The working directory must be specified and must contain an Inputs folder containing speech, eyetracking, and video folders.
 First, install the following requirements:
 
 ```bash
- sudo apt-get install qtmultimedia5-dev libqt5multimediawidgets5 libqt5multimedia5-plugins libqt5multimedia5
+  sudo apt-get install qtmultimedia5-dev libqt5multimediawidgets5
+    libqt5multimedia5-plugins libqt5multimedia5
  ```
 Then run the executable after setting the execution rights:
+
   ```bash
-  chmod +x BrainPredict
-  sh BrainPredict sh
+    chmod +x BrainPredict
+    sh BrainPredict sh
   ```
 
 ## Demo: using the command line
@@ -50,8 +52,9 @@ Then run the executable after setting the execution rights:
 
  # Using visbrain to visulize the prediction in the brain
  python src/visualization.py -in Demo
-
- Required arguments:
+  ```
+   * The required arguments:
+   ```bash
   --regions REGIONS [REGIONS ...], -rg REGIONS [REGIONS ...]
                         Numbers of brain areas to predict (see
                         brain_areas.tsv)
@@ -63,6 +66,6 @@ Then run the executable after setting the execution rights:
                         path of Openface
   --input_dir INPUT_DIR, -in INPUT_DIR
                         path of input directory
-```
+  ```
 
   * The obtained time series, predictions, and visualization videos are stored in Demo/Outputs.
