@@ -10,5 +10,5 @@ python src/predict.py -rg 1 2 3 4 5 6 -pmp PredictionModule -in Demo -t r
 python src/animation.py -in Demo
 
 
-# using visbrain to visulize the prediction in the brain
+# using visbrain to visulize the predictions of the ROIs
 python src/visualization.py -in Demo

@@ -20,4 +20,3 @@ colour==0.1.5
 pylab==0.0.2
 scikit_learn==0.22
 seaborn==0.9.0
-skimage==0.0
