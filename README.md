@@ -8,7 +8,7 @@ A tool for predicting and visualizing the fMRI brain activity during bidirection
   * The FFmpeg multimedia framework:
     ```bash
       sudo apt-get install ffmpeg
-   ```
+    ```
   * Python packages:
     ```bash
       pip install -r requirements.txt
