@@ -21,7 +21,7 @@ def get_predictors (model_name, region, type, path):
     type: interaction type (h (human-human) or r (human-robot))
     """
     model_params = pd. read_csv ("%s/results/prediction/%s_H%s.tsv"%(path, model_name, type. upper ()), sep = '\t', header = 0)
-    predictors = model_params . loc [model_params["region"] == "%s"%region]["predictors_dict"]. iloc [0]
+    predictors = model_params. loc [model_params["region"] == "%s"%region]["predictors_dict"]. iloc [0]
 
     return predictors
 
@@ -33,7 +33,7 @@ def get_predictors_dict (model_name, region, type, path):
     type: interaction type (h (human-human) or r (human-robot))
     """
     model_params = pd. read_csv ("%s/results/prediction/%s_H%s.tsv"%(path, model_name, type. upper ()), sep = '\t', header = 0)
-    predictors = model_params . loc [model_params["region"] == "%s"%region]["selected_predictors"]. iloc [0]
+    predictors = model_params. loc [model_params["region"] == "%s"%region]["selected_predictors"]. iloc [0]
 
     return predictors
 
@@ -85,13 +85,12 @@ def facial_features (pred_path, out_dir, openface_path):
 
     video_name = video_path. split ('/')[-1]. split ('.')[0]
     #openface_csv_file = "%s/Outputs/generated_time_series/video/%/%.csv"%(out_dir,video_name)
-    openface_features = glob.glob (video_output + "/" + video_path[:-4]. split ('/')[-1] + "/*.csv")[0]
 
     if out_dir[-1] != '/':
     	out_dir += '/'
 
     os. system ("python %s/src/generate_ts/facial_action_units.py %s %s -op %s"%(pred_path, video_path, video_output, openface_path))
-
+    openface_features = glob.glob (video_output + "/" + video_path[:-4]. split ('/')[-1] + "/*.csv")[0]
     os. system ("python %s/src/generate_ts/energy.py %s %s -faf %s -d"%(pred_path, video_path, energy_output, openface_features))
 
     video_features = glob.glob (video_output + "/*.pkl")
@@ -100,69 +99,96 @@ def facial_features (pred_path, out_dir, openface_path):
     return pd.concat ([video_feats, facial_feats], axis = 1)
 
 #---------------------------------------------------#
-def eyetracking_features (pred_path, out_dir):
-	""" eyetracking data """
+def extra_features (pred_path, out_dir, type):
+    """ eyetracking data """
 
-	video_output = "%s/Outputs/generated_time_series/video"%out_dir
-	eyetracking_output = "%s/Outputs/generated_time_series/eyetracking"%out_dir
-	video_path = glob.glob ("%s/Inputs/video/*.avi"%out_dir)
-	if len (video_path) == 0:
-		print ("Error: there no input video!")
-		exit (1)
-	else:
-		video_path = video_path [0]
+    video_output = "%s/Outputs/generated_time_series/video"%out_dir
+    eyetracking_output = "%s/Outputs/generated_time_series/%s"%(out_dir, type)
+    video_path = glob.glob ("%s/Inputs/video/*.avi"%out_dir)
+    if len (video_path) == 0:
+    	print ("Error: there is no input video!")
+    	exit (1)
+    else:
+    	video_path = video_path [0]
 
-	#print ("Processing eyetracking data")
-	if out_dir[-1] != '/':
-		out_dir += '/'
+    #print ("Processing eyetracking data")
+    if out_dir[-1] != '/':
+    	out_dir += '/'
 
-	openface_features = glob.glob (video_output + "/" + video_path[:-4]. split ('/')[-1] + "/*.csv")[0]
-	gaze_coordinates_file = glob.glob ("%s/Inputs/eyetracking/*.pkl"%out_dir)[0]
+    openface_features = glob.glob (video_output + "/" + video_path[:-4]. split ('/')[-1] + "/*.csv")[0]
 
-	out = os. system ("python %s/src/generate_ts/eyetracking.py %s %s -d -eye %s -faf %s -sv"%(pred_path, video_path, eyetracking_output, gaze_coordinates_file, openface_features))
+    if type == "eyetracking":
+        gaze_coordinates_file = glob.glob ("%s/Inputs/eyetracking/*.pkl"%out_dir)[0]
+        out = os. system ("python %s/src/generate_ts/eyetracking.py %s %s -d -eye %s -faf %s -sv"%(pred_path, video_path, eyetracking_output, gaze_coordinates_file, openface_features))
 
-	eyetracking_filename = glob.glob ("%s/*.pkl"%eyetracking_output)[0]
-	eyetracking = pd. read_pickle (eyetracking_filename)
+    elif type == "emotions":
+        emotion_module_path = pred_path + "/src/utils/face_classification"
+        out = os. system ("python %s/src/generate_ts/generate_emotions_ts.py -d %s %s -fcp %s"%(pred_path, video_path, eyetracking_output, emotion_module_path))
 
-	return eyetracking
+    elif type == "energy":
+        out = os. system ("python %s/src/generate_ts/energy.py %s %s -d -faf %s"%(pred_path, video_path, eyetracking_output, openface_features))
+
+    elif type == "smiles":
+        out = os. system ("python %s/src/generate_ts/dlib_smiles.py -d %s %s"%(pred_path, video_path, eyetracking_output))
+
+
+    eyetracking_filename = glob.glob ("%s/*.pkl"%eyetracking_output)[0]
+    eyetracking = pd. read_pickle (eyetracking_filename)
+
+    return eyetracking
 
 #---------------------------------------------------#
 if __name__ == '__main__':
-	parser = argparse. ArgumentParser ()
-	requiredNamed = parser.add_argument_group('Required arguments')
-	requiredNamed. add_argument ('--regions','-rg', help = "Numbers of brain areas to predict (see brain_areas.tsv)", nargs = '+', type=int)
-	requiredNamed.add_argument("--language", "-lg", default = "fr", choices = ["fr", "eng"], help="Language.")
-	requiredNamed. add_argument ('--openface_path','-ofp', help = "path of Openface", required=True)
-	requiredNamed. add_argument ('--pred_module_path','-pmp', help = "path of the prediction module", required=True)
-	requiredNamed. add_argument ('--input_dir','-in', help = "path of input directory", required=True)
-	args = parser.parse_args()
+    parser = argparse. ArgumentParser ()
+    requiredNamed = parser.add_argument_group('Required arguments')
+    requiredNamed. add_argument ('--regions','-rg', help = "Numbers of brain areas to predict (see brain_areas.tsv)", nargs = '+', type=int)
+    requiredNamed.add_argument("--language", "-lg", default = "fr", choices = ["fr", "eng"], help="Language.")
+    requiredNamed. add_argument ('--openface_path','-ofp', help = "path of Openface", required=True)
+    requiredNamed. add_argument ('--pred_module_path','-pmp', help = "path of the prediction module", required=True)
+    requiredNamed. add_argument ('--input_dir','-in', help = "path of input directory", required=True)
+    args = parser.parse_args()
 
 
-	if args. pred_module_path [-1] == '/':
-		args. pred_module_path = args. pred_module_path [:-1]
+    if args. pred_module_path [-1] == '/':
+    	args. pred_module_path = args. pred_module_path [:-1]
 
-	out_dir =  "%s/Outputs/generated_time_series/"%args.input_dir
+    out_dir =  "%s/Outputs/generated_time_series/"%args.input_dir
 
-	# GET REGIONS NAMES FOR THEIR CODES
-	brain_areas_desc = pd. read_csv ("brain_areas.tsv", sep = '\t', header = 0)
+    # GET REGIONS NAMES FOR THEIR CODES
+    brain_areas_desc = pd. read_csv ("brain_areas.tsv", sep = '\t', header = 0)
 
-	regions = []
-	for num_region in args. regions:
-		regions. append (brain_areas_desc . loc [brain_areas_desc ["Code"] == num_region, "Name"]. values [0])
+    regions = []
+    for num_region in args. regions:
+    	regions. append (brain_areas_desc . loc [brain_areas_desc ["Code"] == num_region, "Name"]. values [0])
 
-	""" CREATE OUTPUT DIRECTORIES OF THE GENERATED TIME SERIES """
-	for dirct in ["%s/Outputs"%args.input_dir, out_dir, "%s/Outputs/generated_time_series/speech"%args.input_dir, \
-				 "%s/Outputs/generated_time_series/video"%args.input_dir, "%s/Outputs/generated_time_series/eyetracking"%args.input_dir]:
-		if not os.path.exists (dirct):
-			os.makedirs (dirct)
+    """ CREATE OUTPUT DIRECTORIES OF THE GENERATED TIME SERIES """
+    for dirct in ["%s/Outputs"%args.input_dir, out_dir, "%s/Outputs/generated_time_series/speech"%args.input_dir, \
+    			 "%s/Outputs/generated_time_series/video"%args.input_dir, \
+                 "%s/Outputs/generated_time_series/eyetracking"%args.input_dir,\
+                 "%s/Outputs/generated_time_series/emotions"%args.input_dir,\
+                 "%s/Outputs/generated_time_series/energy"%args.input_dir,\
+                 "%s/Outputs/generated_time_series/smiles"%args.input_dir\
+                 ]:
+    	if not os.path.exists (dirct):
+    		os.makedirs (dirct)
 
-	""" GENERATE MULTIMODAL TIME SERIES FROM RAW SIGNALS """
-	speech_left, speech = speech_features (args.pred_module_path, args.input_dir, args. language)
-	video = facial_features (args.pred_module_path, args.input_dir, args.openface_path)
-	eyetracking = eyetracking_features (args.pred_module_path, args.input_dir)
+    """ GENERATE MULTIMODAL TIME SERIES FROM RAW SIGNALS """
+    speech_left, speech = speech_features (args.pred_module_path, args.input_dir, args. language)
+    video = facial_features (args.pred_module_path, args.input_dir, args.openface_path)
 
+    # Extract other facial features: emotions, energy based features ...
+    eyetracking = extra_features (args.pred_module_path, args.input_dir, "eyetracking")
+    emotions = extra_features (args.pred_module_path, args.input_dir, "emotions")
+    energy = extra_features (args.pred_module_path, args.input_dir, "energy")
+    smiles = extra_features (args.pred_module_path, args.input_dir, "smiles")
 
-	""" CONCATENATE AND SAVE MULTIMODAL DATA """
-	all_data = np. concatenate ((speech_left. values, speech. values[:,1:], video. values[:,1:], eyetracking. values[:,1:]), axis = 1)
-	columns = list (speech_left. columns) +  list (speech. columns [1:]) + list (video. columns [1:]) + list (eyetracking. columns [1:])
-	pd. DataFrame (all_data, columns = columns). to_csv (out_dir + "all_features.csv", sep = ';', index = False)
+    """ CONCATENATE AND SAVE MULTIMODAL DATA """
+    all_data = np. concatenate ((speech_left. values,\
+                                speech. values[:,1:],\
+                                eyetracking. values[:,1:],\
+                                emotions. values[:,1:],\
+                                energy. values[:,1:],\
+                                smiles. values[:,1:],\
+                               ), axis = 1)
+    columns = list (speech_left. columns) +  list (speech. columns [1:]) + list (eyetracking. columns [1:]) + list (emotions. columns [1:]) + list (energy. columns [1:]) + list (smiles. columns [1:])
+    pd. DataFrame (all_data, columns = columns). to_csv (out_dir + "all_features.csv", sep = ';', index = False)

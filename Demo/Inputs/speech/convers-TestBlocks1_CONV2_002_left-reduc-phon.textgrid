@@ -1,0 +1,155 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0.0
+xmax = 58.9535600907000017
+tiers? <exists>
+size = 1
+item []:
+	item [1]:
+		class = "IntervalTier"
+		name = "Phones"
+		xmin = 0.0
+		xmax = 58.9535600907
+		intervals: size = 25
+		intervals [1]:
+			xmin = 0.0
+			xmax = 4.994804437633263
+			text = "sil"
+		intervals [2]:
+			xmin = 4.994804437633263
+			xmax = 5.42997732426
+			text = "{s-A/|s}
+v-A/"
+		intervals [3]:
+			xmin = 5.42997732426
+			xmax = 8.75496598639
+			text = "sil"
+		intervals [4]:
+			xmin = 8.75496598639
+			xmax = 9.36997732426
+			text = "fp
+d-y-k-u"
+		intervals [5]:
+			xmin = 9.36997732426
+			xmax = 9.99501133787
+			text = "sil"
+		intervals [6]:
+			xmin = 9.99501133787
+			xmax = 10.5978401308032
+			text = "{Z-@|Z|S}
+{d-w-A/-z|d-w-A/}
+{p-A/-R-l-e-R|p-A/-R-l-e}"
+		intervals [7]:
+			xmin = 10.5978401308032
+			xmax = 11.337702204363966
+			text = "sil"
+		intervals [8]:
+			xmin = 11.337702204363966
+			xmax = 11.97495566918273
+			text = "fp"
+		intervals [9]:
+			xmin = 11.97495566918273
+			xmax = 13.3699773243
+			text = "sil"
+		intervals [10]:
+			xmin = 13.3699773243
+			xmax = 14.1899773243
+			text = "{Z-@|Z|S}
+{p-a~-s-A/-i-s|p-a~-s-@|p-a~-s}
+{k-@|k}"
+		intervals [11]:
+			xmin = 14.1899773243
+			xmax = 14.5
+			text = "sil"
+		intervals [12]:
+			xmin = 14.5
+			xmax = 16.8199546485
+			text = "p-u-R
+{k-O~-p-R-a~-d-R|k-O~-p-R-a~-d-R-@|k-O~-p-R-a~-d}
+{s-E-t-@|s-E-t}
+{i-m-A/-Z|i-m-A/-Z-@}
+{f-A/-l-E-t|f-A/-l-E|f-A/-l-e|f-A/-l-e-t}
+{p-2-t-E-t-R|p-2-t-E-t-R-2}
+fp"
+		intervals [13]:
+			xmin = 16.8199546485
+			xmax = 17.5350113379
+			text = "sil"
+		intervals [14]:
+			xmin = 17.5350113379
+			xmax = 18.2299773243
+			text = "v-w-A/-R
+{s-E-l|s-E-l-@}
+{d-@|d}
+{A/-v-a~-t|A/-v-a~}"
+		intervals [15]:
+			xmin = 18.2299773243
+			xmax = 19.2499773243
+			text = "sil"
+		intervals [16]:
+			xmin = 19.2499773243
+			xmax = 20.9499773243
+			text = "{f-i|f-i-n|f-U~/}
+{l-@|l-e-z|l-E-z|l-e|l-E}
+{Z-a~|Z-a~-z}
+{k-O~-p-R-a~-d-R-E-t|k-O~-p-R-a~-d-R-E}
+{p-A/-z|p-A/}
+{f-O/-R-s-e-m-a~|f-O/-R-s-E-m-a~-t|f-O/-R-s-E-m-a~|f-O/-R-s-e-m-a~-t}
+fp"
+		intervals [17]:
+			xmin = 20.9499773243
+			xmax = 21.78
+			text = "sil"
+		intervals [18]:
+			xmin = 21.78
+			xmax = 22.3699773243
+			text = "l
+{i-m-A/-Z|i-m-A/-Z-@}
+{f-E-t|a~-n-f-e|a~-f-E|a~-f-E-t|a~-n-f-E-t|f-e|a~-f-e|a~-n-f-E|f-E}"
+		intervals [19]:
+			xmin = 22.3699773243
+			xmax = 29.850422087093175
+			text = "sil"
+		intervals [20]:
+			xmin = 29.850422087093175
+			xmax = 32.51729969822223
+			text = "w-E
+s
+{e|E-s-t-@|E-s-t|E-t|t|e-t|E}
+{y-n-@|y-n}
+{p-O/-m|p-O/-m-@}
+A/-v-E-k
+{l-@|l-e-z|l-E-z|l-e|l-E}
+{j-@|j-2-z}
+{d-@|d|t}
+{s-p-i-d-m-a~|s-p-i-d-m-A/-n|s-p-i-d-E-R-m-a~|s-p-i-d-2-R-m-a~}"
+		intervals [21]:
+			xmin = 32.51729969822223
+			xmax = 50.8950113379
+			text = "sil"
+		intervals [22]:
+			xmin = 50.8950113379
+			xmax = 51.1499773243
+			text = "w-E"
+		intervals [23]:
+			xmin = 51.1499773243
+			xmax = 53.64374000007654
+			text = "sil"
+		intervals [24]:
+			xmin = 53.64374000007654
+			xmax = 55.4299773243
+			text = "fp
+s
+{e|E-s-t-@|E-s-t|E-t|t|e-t|E}
+{p-A/-R-s-k|p-A/-s-k-@|p-A/-s-@|p-s-k|p-A/-R-s-@-k-@}
+{s-p-i-d-m-a~|s-p-i-d-m-A/-n|s-p-i-d-E-R-m-a~|s-p-i-d-2-R-m-a~}
+{s-@|s}
+{m-e|m-e-z|m-E|m-E-t|m-e-t}
+A/
+l
+{a~-v-E-R|a~-v-E-R-z}"
+		intervals [25]:
+			xmin = 55.4299773243
+			xmax = 58.9535600907
+			text = "sil"

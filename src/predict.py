@@ -15,74 +15,31 @@ import sys
 
 from sklearn.metrics import recall_score, precision_score, f1_score, average_precision_score
 
-class toSuppervisedData:
-	targets = np.empty([0,0],dtype=float)
-	data = np.empty([0,0],dtype=float)
+def reorganize_data (data_, lag = 6, step = 1):
+    """
+        step: ratio between frequencies of two time index (1.205 s)
+        lag: lag
+    """
 
-	## constructor
-	def __init__(self, X, p, test_data = False, add_target = False):
+    out_data = []
 
-		self.targets = self.targets_decomposition (X,p)
-		self.data = self.matrix_decomposition (X,p, test_data)
+    # first point 0.6s correspont to the first BOLD acquisition
+    lag0 = 1
+    real_lag = lag - 2
 
-		if not add_target:
-			self.data = np. delete (self.data, range (0, p), axis = 1)
+    for i in range (lag, len (data_), step):
+        row = []
+        for j in range (data_. shape [1]):
+            row = row + list (data_ [i - lag : i -  lag + real_lag, j]. flatten ()) #+ [np. sum (data_ [i - lag : i - lag + 3, j])]
+            #row = row + [np. mean (data_ [i - lag : i -  lag + real_lag, j]), np. std (data_ [i - lag : i -  lag + real_lag, j])]
+        out_data. append (row)
 
-		delet = []
+    return np. array (out_data)
+#---------------------------------------------------#
+def get_features_from_lagged (lagged_variables):
+	features = set (['_'. join (a.split ('_')[0:-1]) for a in lagged_variables])
+	return ','. join (map (str, list (features)))
 
-		if X.shape[1] > 1 and p > 4:
-			for j in range (0, self.data. shape [1], p):
-				delet. extend ([j + p - i for i in range (1, 3)])
-
-		self.data = np. delete (self.data, delet, axis = 1)
-
-	## p-decomposition of a vector
-	def vector_decomposition (self, x, p, test = False):
-		n = len(x)
-		if test:
-			add_target_to_data = 1
-		else:
-			add_target_to_data = 0
-
-		output = np.empty([n-p,p],dtype=float)
-
-		for i in range (n-p):
-			for j in range (p):
-				output[i,j] = x[i + j + add_target_to_data]
-		return output
-
-	# p-decomposition of a target
-	def target_decomposition (self,x,p):
-		n = len(x)
-		output = np.empty([n-p,1],dtype=float)
-		for i in range (n-p):
-			output[i] = x[i+p]
-		return output
-
-	# p-decomposition of a matrix
-	def matrix_decomposition (self,x,p, test=False):
-		output = np.empty([0,0],dtype=float)
-		out = np.empty([0,0],dtype=float)
-
-		for i in range(x.shape[1]):
-			out = self.vector_decomposition(x[:,i],p, test)
-			if output.size == 0:
-				output = out
-			else:
-				output = np.concatenate ((output,out),axis=1)
-
-		return output
-	# extract all the targets decomposed
-	def targets_decomposition (self,x,p):
-		output = np.empty([0,0],dtype=float)
-		out = np.empty([0,0],dtype=float)
-		for i in range(x.shape[1]):
-			out = self.target_decomposition(x[:,i],p)
-			if output.size == 0:
-				output = out
-			else:
-				output = np.concatenate ((output,out),axis=1)
-		return output
 
 #---------------------------------------------------#
 def get_predictors (model_name, region, type, path):
@@ -92,6 +49,7 @@ def get_predictors (model_name, region, type, path):
     type: interaction type (h (human-human) or r (human-robot))
     """
     model_params = pd. read_csv ("%s/results/prediction/%s_H%s.tsv"%(path, model_name, type. upper ()), sep = '\t', header = 0)
+    print (model_params. loc [model_params["region"] == "%s"%region]["predictors_dict"])
     predictors = model_params . loc [model_params["region"] == "%s"%region]["predictors_dict"]. iloc [0]
 
     return predictors
@@ -141,7 +99,7 @@ if __name__ == '__main__':
     for col in columns [1: ]:
     	lagged_names. extend ([col + "_t%d"%(p) for p in range (args. lag, 2, -1)])
 
-    all_data = pd. DataFrame (toSuppervisedData (all_data. values, args. lag). data, columns = lagged_names)
+    all_data = pd. DataFrame (reorganize_data (all_data. values[:,1:], lag = 6, step = 1), columns = lagged_names)
 
     """ load the best models for each regions """
     if args. type == 'h':
@@ -158,7 +116,9 @@ if __name__ == '__main__':
     preds = {}
     predictors_variables = {}
     nb_r = 1
+
     for region in regions:
+        print (region, '\n', 18 * '-')
         predictors_data = pd. DataFrame ()
         predictors_data. columns = []
         fname = ""
@@ -169,31 +129,32 @@ if __name__ == '__main__':
 
         model_name = fname. split ('/')[-1]. split ('_') [0]
         #print (model_name)
-        model = joblib.load (fname)
+        model = joblib. load (fname)
 
         predictors = literal_eval (get_predictors_dict (model_name, region, args. type, args.pred_module_path))
         #print ("Predictors time series: ", predictors, "\n -------------")
 
-        predictors_data = all_data. loc [:, predictors]
+        predictors_data = all_data. loc [:, predictors]. values
 
-        #if "DummyClassifier"  in str (model):
-            #continue
-
-        try:
-            pred = model. predict (predictors_data)
-        except:
-            print ("Error in prediction model of ROI %s"%region)
-            continue
+        pred = model. predict (predictors_data)
 
         preds [region] = [0 for i in range (args. lag)] + pred. tolist ()
-        predictors_variables [region] = literal_eval (get_predictors (model_name, region, args. type, args.pred_module_path))
+
+        # Selected variables without lags
+        predictors_variables [region] = get_features_from_lagged (predictors)
+        #predictors_variables [region] = literal_eval (get_predictors (model_name, region, args. type, args.pred_module_path))
         #print (region, "\n", 18 * '-')
         print (int (100 * float (nb_r) / len (regions)))
         nb_r += 1
-
     preds_var = pd.DataFrame ()
+
+
     for col in predictors_variables. keys ():
-    	preds_var[col] = [str (predictors_variables [col])]
+        str_feat = predictors_variables [col]. split (',')
+        #print (str_feat)
+        str_feat = ', '. join (map (str, str_feat))
+        print (str_feat)
+        preds_var[col] = [str_feat]
 
     # time index : fMRI recording frequency
     step = 1.205
