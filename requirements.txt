@@ -2,7 +2,6 @@ dlib==19.17.0
 nibabel==2.5.1
 mat4py==0.4.2
 joblib==0.14.0
-PyWavelets==1.1.1
 fylearn==0.0.0
 matplotlib==3.0.3
 numpy==1.17.3
@@ -20,3 +19,5 @@ colour==0.1.5
 pylab==0.0.2
 scikit_learn==0.22
 seaborn==0.9.0
+h5py==2.7.0
+statistics
