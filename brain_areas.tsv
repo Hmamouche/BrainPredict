@@ -5,18 +5,18 @@ LeftFusiformGyrus	5	105	A37mv_L	[0, 255, 158, 0, 10419968]
 RightFusiformGyrus	6	106	A37mv_R	[255, 176, 9, 0, 635135]
 LeftSTS	3	79	A22c_L	[176, 70, 158, 0, 10372784]
 RightSTS	4	80	A22c_R	[149, 149, 255, 0, 16749973]
-LeftPrecuneus	7
-RightPrecuneus	8
-LeftTemporoParietalJunction	9
-RightTemporoParietalJunction	10
-LeftVMPFC	11
-RightVMPFC	12
-RightLatAmygdala	13
-LeftLatAMygdala	14
-Hypothalamus	15
-LeftV1	16
-RightV1	17
-GreyMatter	18
-WhiteMatter	19
-CSF	20
-rMPFC	21
+LeftPrecuneus	7			
+RightPrecuneus	8			
+LeftTemporoParietalJunction	9	0	A37dl_L	[0, 35, 9, 0, 598784]
+RightTemporoParietalJunction	10	144	A39rv_R	[106, 62, 53, 0, 3489386]
+LeftVMPFC	11			
+RightVMPFC	12			
+RightLatAmygdala	13			
+LeftLatAMygdala	14			
+Hypothalamus	15			
+LeftV1	16			
+RightV1	17			
+GreyMatter	18			
+WhiteMatter	19			
+CSF	20			
+rMPFC	21	12	A10l_R	[141, 255, 158, 0, 10420109]

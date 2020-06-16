@@ -99,7 +99,7 @@ def get_predictors (model_name, region, type, path):
     type: interaction type (h (human-human) or r (human-robot))
     """
     model_params = pd. read_csv ("%s/results/prediction/%s_H%s.tsv"%(path, model_name, type. upper ()), sep = '\t', header = 0)
-    print (model_params. loc [model_params["region"] == "%s"%region]["predictors_dict"])
+    #print (model_params. loc [model_params["region"] == "%s"%region]["predictors_dict"])
     predictors = model_params . loc [model_params["region"] == "%s"%region]["predictors_dict"]. iloc [0]
 
     return predictors

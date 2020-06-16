@@ -91,7 +91,8 @@ if __name__ == '__main__':
 	for i in range (1,len (index)):
 		for j in range (len (regions)):
 			ax[j]. plot (index [:i], df. iloc [:i, j], linewidth = 2, color = colors_of_rois [j], alpha = 1, label = regions[j])
-			ax[j].legend(['%s'%regions[j]], loc='upper right', bbox_to_anchor = (1.12, 1), markerscale = 2)
+			ax[j].legend([r'%s'%regions[j]], loc='upper right', bbox_to_anchor = (1.12, 1), markerscale = 2, mode="None")
+
 		camera.snap()
 
 
