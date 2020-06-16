@@ -1,0 +1,9 @@
+\begin{tabular}{lllllrr}
+\toprule
+{} &                           ROI &   dm\_method &                                                             Predictors &      Features\_importances &  Fscore &  Accuracy \\
+\midrule
+0  &                       LeftSTS &  MI\_RANK\_13 &  ['SpeechActivity', 'LexicalRichness2', 'Polarity', 'UnionSocioItems'] &  [0.84, 0.07, 0.07, 0.03] &    0.71 &  0.687928 \\
+12 &  RightTemporoParietalJunction &   MI\_RANK\_7 &                              ['SpeechActivity\_left', 'SpeechActivity'] &              [0.63, 0.37] &    0.62 &  0.578864 \\
+15 &                         rMPFC &   MI\_RANK\_8 &                          ['SpeechActivity\_left', 'pose\_Tx', 'pose\_Rx'] &        [0.58, 0.31, 0.11] &    0.60 &  0.537541 \\
+\bottomrule
+\end{tabular}

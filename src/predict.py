@@ -12,29 +12,79 @@ import joblib
 import argparse
 from ast import literal_eval
 import sys
+from tqdm import tqdm
 
 from sklearn.metrics import recall_score, precision_score, f1_score, average_precision_score
 
-def reorganize_data (data_, lag = 6, step = 1):
-    """
-        step: ratio between frequencies of two time index (1.205 s)
-        lag: lag
-    """
+class toSuppervisedData:
+	targets = np.empty([0,0],dtype=float)
+	data = np.empty([0,0],dtype=float)
 
-    out_data = []
+	## constructor
+	def __init__(self, X, p, test_data = False, add_target = False):
 
-    # first point 0.6s correspont to the first BOLD acquisition
-    lag0 = 1
-    real_lag = lag - 2
+		self.targets = self.targets_decomposition (X,p)
+		self.data = self.matrix_decomposition (X,p, test_data)
 
-    for i in range (lag, len (data_), step):
-        row = []
-        for j in range (data_. shape [1]):
-            row = row + list (data_ [i - lag : i -  lag + real_lag, j]. flatten ()) #+ [np. sum (data_ [i - lag : i - lag + 3, j])]
-            #row = row + [np. mean (data_ [i - lag : i -  lag + real_lag, j]), np. std (data_ [i - lag : i -  lag + real_lag, j])]
-        out_data. append (row)
+		if not add_target:
+			self.data = np. delete (self.data, range (0, p), axis = 1)
 
-    return np. array (out_data)
+		delet = []
+
+		if X.shape[1] > 1 and p > 4:
+			for j in range (0, self.data. shape [1], p):
+				delet. extend ([j + p - i for i in range (1, 3)])
+
+		self.data = np. delete (self.data, delet, axis = 1)
+
+	## p-decomposition of a vector
+	def vector_decomposition (self, x, p, test = False):
+		n = len(x)
+		if test:
+			add_target_to_data = 1
+		else:
+			add_target_to_data = 0
+
+		output = np.empty([n-p,p],dtype=float)
+
+		for i in range (n-p):
+			for j in range (p):
+				output[i,j] = x[i + j + add_target_to_data]
+		return output
+
+	# p-decomposition of a target
+	def target_decomposition (self,x,p):
+		n = len(x)
+		output = np.empty([n-p,1],dtype=float)
+		for i in range (n-p):
+			output[i] = x[i+p]
+		return output
+
+	# p-decomposition of a matrix
+	def matrix_decomposition (self,x,p, test=False):
+		output = np.empty([0,0],dtype=float)
+		out = np.empty([0,0],dtype=float)
+
+		for i in range(x.shape[1]):
+			out = self.vector_decomposition(x[:,i],p, test)
+			if output.size == 0:
+				output = out
+			else:
+				output = np.concatenate ((output,out),axis=1)
+
+		return output
+	# extract all the targets decomposed
+	def targets_decomposition (self,x,p):
+		output = np.empty([0,0],dtype=float)
+		out = np.empty([0,0],dtype=float)
+		for i in range(x.shape[1]):
+			out = self.target_decomposition(x[:,i],p)
+			if output.size == 0:
+				output = out
+			else:
+				output = np.concatenate ((output,out),axis=1)
+		return output
+
 #---------------------------------------------------#
 def get_features_from_lagged (lagged_variables):
 	features = set (['_'. join (a.split ('_')[0:-1]) for a in lagged_variables])
@@ -78,29 +128,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args. pred_module_path [-1] == '/':
-    	args. pred_module_path = args. pred_module_path [:-1]
-
-    out_dir =  "%s/Outputs/generated_time_series/"%args.input_dir
-
-    # GET REGIONS NAMES FOR THEIR CODES
-    brain_areas_desc = pd. read_csv ("brain_areas.tsv", sep = '\t', header = 0)
-
-    regions = []
-    for num_region in args. regions:
-    	regions. append (brain_areas_desc . loc [brain_areas_desc ["Code"] == num_region, "Name"]. values [0])
-
-    # WRIGHT MULTIMODAL TIME SERIES TO CSV FILE
-    all_data = pd. read_csv ("%s/Outputs/generated_time_series/all_features.csv"%args.input_dir, sep = ';', header = 0)
-    columns = all_data. columns
-
-    print ("0")
-    lagged_names = []
-    for col in columns [1: ]:
-    	lagged_names. extend ([col + "_t%d"%(p) for p in range (args. lag, 2, -1)])
-
-    all_data = pd. DataFrame (reorganize_data (all_data. values[:,1:], lag = 6, step = 1), columns = lagged_names)
-
     """ load the best models for each regions """
     if args. type == 'h':
     	conversation_type = 'HH'
@@ -110,6 +137,30 @@ if __name__ == '__main__':
     	print ("Error in arguments, type of conversation missing, use -h for help!")
     	exit (1)
 
+    if args. pred_module_path [-1] == '/':
+    	args. pred_module_path = args. pred_module_path [:-1]
+
+    out_dir =  "%s/Outputs/generated_time_series/"%args.input_dir
+
+    # read brain areas codes
+    regions = []
+    brain_areas_desc = pd. read_csv ("brain_areas.tsv", sep = '\t', header = 0)
+    for num_region in args. regions:
+    	regions. append (brain_areas_desc . loc [brain_areas_desc ["Code"] == num_region, "Name"]. values [0])
+
+    # Read the computed multomodal time series
+    all_data = pd. read_csv ("%s/Outputs/generated_time_series/features.csv"%args.input_dir, sep = ';', header = 0)
+    columns = all_data. columns
+
+    # get names of lagged variables of transform the data to a temporal representation depending on the lag parameter
+    lagged_names = []
+    for col in columns [1: ]:
+    	lagged_names. extend ([col + "_t%d"%(p) for p in range (args. lag, 2, -1)])
+
+    all_data = pd. DataFrame (toSuppervisedData (all_data. values, args. lag). data, columns = lagged_names)
+
+
+    # Load trained models found as best for each brain area in the training step
     trained_models = glob. glob ("%s/trained_models/*%s.pkl"%(args.pred_module_path,conversation_type))
 
     # dictionary of predictions: results
@@ -117,8 +168,9 @@ if __name__ == '__main__':
     predictors_variables = {}
     nb_r = 1
 
-    for region in regions:
-        print (region, '\n', 18 * '-')
+    # Predict each brain area
+    for region in tqdm (regions):
+        print (region)
         predictors_data = pd. DataFrame ()
         predictors_data. columns = []
         fname = ""
@@ -134,7 +186,7 @@ if __name__ == '__main__':
         predictors = literal_eval (get_predictors_dict (model_name, region, args. type, args.pred_module_path))
         #print ("Predictors time series: ", predictors, "\n -------------")
 
-        predictors_data = all_data. loc [:, predictors]. values
+        predictors_data = all_data. loc [:, predictors]
 
         pred = model. predict (predictors_data)
 
@@ -142,25 +194,22 @@ if __name__ == '__main__':
 
         # Selected variables without lags
         predictors_variables [region] = get_features_from_lagged (predictors)
-        #predictors_variables [region] = literal_eval (get_predictors (model_name, region, args. type, args.pred_module_path))
-        #print (region, "\n", 18 * '-')
-        print (int (100 * float (nb_r) / len (regions)))
+
         nb_r += 1
+
+
+    # Store the predictions
     preds_var = pd.DataFrame ()
-
-
     for col in predictors_variables. keys ():
-        str_feat = predictors_variables [col]. split (',')
-        #print (str_feat)
-        str_feat = ', '. join (map (str, str_feat))
-        print (str_feat)
-        preds_var[col] = [str_feat]
+    	preds_var[col] = [str (predictors_variables [col])]
 
     # time index : fMRI recording frequency
+    # TODO: make this more automatic or read it as argument
     step = 1.205
     index = [step]
     for i in range (1, args. lag + len (pred)):
     	index. append (index [i - 1] + step)
 
+    # Store the predictions
     pd. DataFrame (preds, index = index). to_csv ("%s/Outputs/predictions.csv"%args.input_dir, sep = ';', index_label = ["Time (s)"])
     preds_var. to_csv ("%s/Outputs/predictors.csv"%args.input_dir, sep = ';', index = False)

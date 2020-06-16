@@ -91,7 +91,7 @@ item []:
 		intervals [20]:
 			xmin = 12.789977
 			xmax = 12.949977
-			text = "w"
+			text = "u"
 		intervals [21]:
 			xmin = 12.949977
 			xmax = 13.089977
@@ -103,7 +103,7 @@ item []:
 		intervals [23]:
 			xmin = 23.515011
 			xmax = 23.675011
-			text = "Z"
+			text = "S"
 		intervals [24]:
 			xmin = 23.675011
 			xmax = 23.825011
@@ -131,7 +131,7 @@ item []:
 		intervals [30]:
 			xmin = 28.12
 			xmax = 28.23
-			text = "e"
+			text = "t"
 		intervals [31]:
 			xmin = 28.23
 			xmax = 28.34
@@ -159,7 +159,7 @@ item []:
 		intervals [37]:
 			xmin = 36.604989
 			xmax = 36.774989000000005
-			text = "w"
+			text = "u"
 		intervals [38]:
 			xmin = 36.774989000000005
 			xmax = 36.929977
@@ -315,7 +315,7 @@ item []:
 		intervals [76]:
 			xmin = 49.759977
 			xmax = 49.849977
-			text = "e"
+			text = "t"
 		intervals [77]:
 			xmin = 49.849977
 			xmax = 49.939977
@@ -351,7 +351,7 @@ item []:
 		intervals [85]:
 			xmin = 52.284989
 			xmax = 52.374989
-			text = "e"
+			text = "t"
 		intervals [86]:
 			xmin = 52.374989
 			xmax = 52.464989
@@ -651,7 +651,7 @@ item []:
 		intervals [11]:
 			xmin = 12.789977
 			xmax = 13.089977
-			text = "w-i"
+			text = "u-i"
 		intervals [12]:
 			xmin = 13.089977
 			xmax = 23.515011
@@ -659,7 +659,7 @@ item []:
 		intervals [13]:
 			xmin = 23.515011
 			xmax = 23.675011
-			text = "Z"
+			text = "S"
 		intervals [14]:
 			xmin = 23.675011
 			xmax = 23.825011
@@ -683,7 +683,7 @@ item []:
 		intervals [19]:
 			xmin = 28.12
 			xmax = 28.23
-			text = "e"
+			text = "t"
 		intervals [20]:
 			xmin = 28.23
 			xmax = 28.45
@@ -699,7 +699,7 @@ item []:
 		intervals [23]:
 			xmin = 36.604989
 			xmax = 36.929977
-			text = "w-i"
+			text = "u-i"
 		intervals [24]:
 			xmin = 36.929977
 			xmax = 37.169977
@@ -771,7 +771,7 @@ item []:
 		intervals [41]:
 			xmin = 49.759977
 			xmax = 49.849977
-			text = "e"
+			text = "t"
 		intervals [42]:
 			xmin = 49.849977
 			xmax = 49.939977
@@ -795,7 +795,7 @@ item []:
 		intervals [47]:
 			xmin = 52.284989
 			xmax = 52.374989
-			text = "e"
+			text = "t"
 		intervals [48]:
 			xmin = 52.374989
 			xmax = 52.464989

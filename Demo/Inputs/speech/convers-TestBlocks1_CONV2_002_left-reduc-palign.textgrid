@@ -59,7 +59,7 @@ item []:
 		intervals [12]:
 			xmin = 9.995011
 			xmax = 10.065011
-			text = "Z"
+			text = "S"
 		intervals [13]:
 			xmin = 10.065011
 			xmax = 10.125011
@@ -107,7 +107,7 @@ item []:
 		intervals [24]:
 			xmin = 13.369977
 			xmax = 13.539977
-			text = "Z"
+			text = "S"
 		intervals [25]:
 			xmin = 13.539977
 			xmax = 13.699977
@@ -303,7 +303,7 @@ item []:
 		intervals [73]:
 			xmin = 19.469977
 			xmax = 19.539977
-			text = "@"
+			text = "e"
 		intervals [74]:
 			xmin = 19.539977
 			xmax = 19.609977
@@ -435,7 +435,7 @@ item []:
 		intervals [106]:
 			xmin = 30.190421999999998
 			xmax = 30.300421999999998
-			text = "e"
+			text = "t"
 		intervals [107]:
 			xmin = 30.300421999999998
 			xmax = 30.410421999999997
@@ -479,7 +479,7 @@ item []:
 		intervals [117]:
 			xmin = 31.400422
 			xmax = 31.510422
-			text = "@"
+			text = "e"
 		intervals [118]:
 			xmin = 31.510422
 			xmax = 31.620421999999998
@@ -543,7 +543,7 @@ item []:
 		intervals [133]:
 			xmin = 53.81374
 			xmax = 53.89374
-			text = "e"
+			text = "t"
 		intervals [134]:
 			xmin = 53.89374
 			xmax = 53.97374
@@ -927,7 +927,7 @@ item []:
 		intervals [8]:
 			xmin = 9.995011
 			xmax = 10.065011
-			text = "Z"
+			text = "S"
 		intervals [9]:
 			xmin = 10.065011
 			xmax = 10.245011
@@ -951,7 +951,7 @@ item []:
 		intervals [14]:
 			xmin = 13.369977
 			xmax = 13.539977
-			text = "Z"
+			text = "S"
 		intervals [15]:
 			xmin = 13.539977
 			xmax = 14.019977
@@ -1023,7 +1023,7 @@ item []:
 		intervals [32]:
 			xmin = 19.399977
 			xmax = 19.539977
-			text = "l-@"
+			text = "l-e"
 		intervals [33]:
 			xmin = 19.539977
 			xmax = 19.679977
@@ -1075,7 +1075,7 @@ item []:
 		intervals [45]:
 			xmin = 30.190421999999998
 			xmax = 30.300421999999998
-			text = "e"
+			text = "t"
 		intervals [46]:
 			xmin = 30.300421999999998
 			xmax = 30.520422
@@ -1091,7 +1091,7 @@ item []:
 		intervals [49]:
 			xmin = 31.290422
 			xmax = 31.510422
-			text = "l-@"
+			text = "l-e"
 		intervals [50]:
 			xmin = 31.510422
 			xmax = 31.730421999999997
@@ -1127,7 +1127,7 @@ item []:
 		intervals [58]:
 			xmin = 53.81374
 			xmax = 53.89374
-			text = "e"
+			text = "t"
 		intervals [59]:
 			xmin = 53.89374
 			xmax = 54.13374

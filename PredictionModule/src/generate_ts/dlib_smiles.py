@@ -46,9 +46,9 @@ if __name__ == '__main__':
 
 	out_file = args. out_dir + conversation_name
 
-	if os.path.isfile (out_file + ".pkl"):
+	'''if os.path.isfile (out_file + ".pkl"):
 		print ("files already exists")
-		exit (1)
+		exit (1)'''
 
 	# starting video streaming
 	video_capture = cv2.VideoCapture(args.video)
@@ -64,11 +64,8 @@ if __name__ == '__main__':
 	time_series = []
 	current_time = 0
 
-	# reading the video
 	j = 0
 	while True:
-		ret, bgr_image = video_capture.read()
-		ret, bgr_image = video_capture.read()
 		ret, bgr_image = video_capture.read()
 		ret, bgr_image = video_capture.read()
 		ret, bgr_image = video_capture.read()
@@ -94,7 +91,10 @@ if __name__ == '__main__':
 			else:
 				time_series. append ([current_time, 0])
 
-		current_time += 5.0 / fps
+		else:
+			time_series. append ([current_time, 0])
+
+		current_time += 3.0 / fps
 
 		if args. show:
 			cv2.rectangle (bgr_image, (x, y), ((x + w), (y + h)), (255, 0, 0), 2)

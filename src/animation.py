@@ -61,8 +61,6 @@ if __name__ == '__main__':
 		colors_of_rois[i] = literal_eval (colors_of_rois[i])[0:3]
 		colors_of_rois[i] = [float (a) / 255 for a in colors_of_rois[i]]
 
-	#print (colors_of_rois)
-
 	# SAVE LEGENDS SEPARATELY
 	fig = plt.figure()
 	fig_legend = plt.figure(figsize=(6, 1))
@@ -73,7 +71,6 @@ if __name__ == '__main__':
 	plt.clf ()
 	plt. cla ()
 	plt. close ()
-	#exit (1)
 
 	# SAVE PREDICTIONS AS A VIDEO
 	fig, ax = plt.subplots (nrows = len (regions), ncols = 1, figsize=(14,8),  sharex=True)
@@ -88,24 +85,17 @@ if __name__ == '__main__':
 
 	for j in range (len (regions)):
 		ax [j]. set_xlim (np.min (index), np. max (index) + 1)
-		#ax [j]. set_xticks (index)
-		#ax [j]. set_xticklabels (index, rotation=-10)
 		ax [j]. xaxis.set_minor_locator(MultipleLocator(5))
 		ax [j]. set_ylim (0, 1.1)
 
 	for i in range (1,len (index)):
 		for j in range (len (regions)):
 			ax[j]. plot (index [:i], df. iloc [:i, j], linewidth = 2, color = colors_of_rois [j], alpha = 1, label = regions[j])
-			#ax[j].legend () #loc='upper right', fancybox=True, shadow=True, ncol=4, fontsize = "medium", markerscale = 0.2, labelspacing = 0.1, handletextpad=0.2, handlelength=1)
 			ax[j].legend(['%s'%regions[j]], loc='upper right', bbox_to_anchor = (1.12, 1), markerscale = 2)
-
-		#plt.legend(['%s'%reg for reg in regions], ncol = 3)
 		camera.snap()
-
 
 
 	anim = camera.animate (repeat = False, interval = 1205)
 
 	anim.save("%s/Outputs/predictions_video.mp4"%args.input_dir, extra_args=['-vcodec', 'h264', '-pix_fmt', 'yuv420p'])
 	fig. savefig ("%s/Outputs/predictions.png"%args.input_dir)
-	#plt. show ()

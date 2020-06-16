@@ -2,7 +2,7 @@
     Author: Youssef Hmamouche
     Year: 2019
     Generate video of brain activity predictions
-    This script uses a csv file of predictions, and annotation files for brain parcellation
+    This script uses a csv file of predictions, and annotation files associated to brain parcellation
 '''
 
 import numpy as np
@@ -19,7 +19,7 @@ import argparse
 def get_label_from_roi (brain_area, correspondance_tale):
     return correspondance_tale. loc [correspondance_tale["Name"] == brain_area, "Label"]. values [0]
 
-"""================================================================="""
+#=================================================================#
 def create_brain_obj (annot_file_R, annot_file_L, areas):
     brain_obj = BrainObj(name = 'inflated', hemisphere='both', translucent=False, cbtxtsz = 10.) #, cblabel='Parcellates example', cbtxtsz=4.)
     left_areas = []
@@ -39,13 +39,8 @@ def create_brain_obj (annot_file_R, annot_file_L, areas):
 
     return brain_obj
 
-'''def create_brain_obj (rfile, lfile, right_areas, left_areas):
-    brain_obj = BrainObj(name = 'inflated', hemisphere='both', translucent=False, cbtxtsz = 10.) #, cblabel='Parcellates example', cbtxtsz=4.)
-    brain_obj.parcellize(lfile, hemisphere='left',  select=left_areas)
-    brain_obj.parcellize(rfile, hemisphere='right',  select=right_areas)
-    return brain_obj'''
 
-"""================================================================="""
+#=================================================================#
 def render_image (areas_labels, annot_file_R, annot_file_L):
 
     CBAR_STATE = dict(cbtxtsz=12, txtsz=10., width=.1, cbtxtsh=3., rect=(-.3, -2., 1., 4.))
@@ -77,7 +72,7 @@ def render_image (areas_labels, annot_file_R, annot_file_L):
     #exit (1)
     return sc. render ()
 
-"""================================================================="""
+#=================================================================#
 def render_brain_image (r_areas_labels, l_areas_labels, r_file, l_file):
 
     CBAR_STATE = dict(cbtxtsz=12, txtsz=10., width=.1, cbtxtsh=3., rect=(-.3, -2., 1., 4.))
@@ -101,7 +96,7 @@ def render_brain_image (r_areas_labels, l_areas_labels, r_file, l_file):
     sc = SceneObj ()
     brain_objs = []
 
-    # CREATE 4 BRAIN OBJECTS EACH WITH SPECOFOC ROTATION
+    # CREATE 4 BRAIN OBJECTS EACH WITH SPECIFIC ROTATION
     for rot in ["left", "right", 'side-fl', 'side-fr', 'front', 'back']:
         brain_objs. append (create_brain_obj (r_file, l_file, select_right, select_left))
 
@@ -115,30 +110,34 @@ def render_brain_image (r_areas_labels, l_areas_labels, r_file, l_file):
 
     return sc. render ()
 
-"""================================================================="""
+#=================================================================#
 if __name__ == '__main__':
     parser = argparse. ArgumentParser ()
     requiredNamed = parser.add_argument_group('Required arguments')
     requiredNamed. add_argument ('--input_dir','-in', help = "path of input directory")
     args = parser.parse_args()
 
+    # read brain areas file
+    brain_areas_csv = pd. read_csv ("brain_areas.tsv", sep = '\t', header = 0)
+    brain_areas = brain_areas_csv. loc[:, "Name"]. values
+    coresp_table = brain_areas_csv[["Name", "Label"]]
+
+    # read parrcelation files
     l_file = "parcellation/lh.BN_Atlas.annot"
     r_file = "parcellation/rh.BN_Atlas.annot"
-
     annot_l = nib.freesurfer.io.read_annot (l_file)
     annot_r = nib.freesurfer.io.read_annot (r_file)
 
+    # read the prediction file (fMRI responses predictions)
     predictions = pd.read_csv ("%s/Outputs/predictions.csv"%args.input_dir, sep = ';', header = 0)
 
+    # set video parameters
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     fps = 30
     out = cv2.VideoWriter ("%s/Outputs/brain_activation.mp4"%args.input_dir, fourcc, fps, (1400, 1000))
 
-    brain_areas_csv = pd. read_csv ("brain_areas.tsv", sep = '\t', header = 0)
 
-    brain_areas = brain_areas_csv. loc[:, "Name"]. values
-    coresp_table = brain_areas_csv[["Name", "Label"]]
-
+    # Brain visualisation of fMRI predictions
     for i in range (predictions. shape [0]):
         # find activated areas
         activated_areas = []
@@ -148,8 +147,13 @@ if __name__ == '__main__':
             if ligne[j] == 1:
                 activated_areas. append (get_label_from_roi (brain_areas[j], coresp_table))
 
+        # Render an image associated of one prediction of the selected brain areas
         img = render_image (activated_areas, r_file, l_file)
+        # Transform the image to RGB
         img = cv2.cvtColor (img, cv2.COLOR_BGR2RGB)
+
+        # Write the image for a duration of 1.2s (we suupose that we have a prediction each 1.2s)
+        # TODO: make this more general (detect the timing automatically from the prediction file)
         for j in range (36):
             out.write(img)
 

@@ -7,10 +7,14 @@ import os, sys
 import argparse
 from mat4py import loadmat
 from skimage import filters
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from sklearn.preprocessing import KBinsDiscretizer
 #from sklearn.cluster import KMeans
 from sklearn import preprocessing
+
+
+from pybold.bold_signal import deconv
+from pybold.hrf_model import spm_hrf
 
 
 def sigmoid (x):
@@ -18,14 +22,28 @@ def sigmoid (x):
     y = 1/(1+e**(-x))
     return y
 
+
+#====================================#
+def diff (data):
+    data_s = [0 for i in range (len (data))]
+    data_s [0] = 0
+
+    for i in range (1, len (data)):
+    	data_s[i] = data[i] - data[i - 1]
+    return np. array (data_s)
+
 #====================================#
 def smoothing (data, alpha = 0.7):
     data_s = [0 for i in range (len (data))]
     data_s [0] = data [0]
-    #data_s [1] = data [1]
+    '''data_s [1] = data [1] + data [0]
+    data_s [2] = data [2] + data [1] + data [0]
+    data_s [3] = data [3] + data [2] + data [1] + data [0]
+    data_s [4] = data_s [4] + data [3] + data [2] + data [1] + data [0]'''
     for i in range (1, len (data)):
     	data_s[i] = alpha * data[i] + (1 - alpha) * data[i - 1]
-        #data_s[i] = 0.5 * data[i] + 0.3 * data[i - 1] + 0.2 * data[i - 2]
+        #data_s[i] = 0.25 * data[i] + 0.25 * data[i - 1] + 0.25 * data[i - 2] +  0.25 * data[i - 3]
+        #data_s[i] = data[i] + data[i - 1] + data[i - 2] +  data[i - 3] + data[i - 4] + data[i - 5]
     	#data_s[i] = data[i] - data[i - 1]
     return np. array (data_s)
 #-----------------------------------------------------------------------------
@@ -106,7 +124,7 @@ def nearestPoint(vect, value):
     pos = 0
 
     for i in range(1, len(vect)):
-        if abs(value - vect[i]) < dist and value >= vect[i]:
+        if abs(value - vect[i]) < dist and value <= vect[i]:
             dist = abs(value - vect[i])
             pos = i
 
@@ -163,12 +181,12 @@ if __name__ == '__main__':
     parser. add_argument ("--concat", "-ct", help = "remove previous files", action="store_true")
     args = parser.parse_args()
 
-    mat_data = loadmat ("data/physio_data/ROIdata/resultsYH28022020.mat")
+    #mat_data = loadmat ("data/physio_data/ROIdata/resultsYH18052020.mat")
+    mat_data = loadmat ("data/physio_data/ROIdata/resultsYH14052020.mat")
 
     index = [0]
     for i in range (1, 4 * 385):
         index. append (1.205 + index [i - 1])
-
 
     """ store the discretization parameters """
     f= open("disc_params.txt","w+")
@@ -186,27 +204,74 @@ if __name__ == '__main__':
 
         nb_regions =  len (mat_data ["results"][s]["roi"])
 
+
         bol_signal = pd. DataFrame ()
         bold_signal_discretized = pd. DataFrame ()
 
+        #nb_regions = 1
+
         # loop over regions
         for r in range (nb_regions):
+            #region_name = mat_data ["results"][s]["roi"]['name']
+            #sessions =  mat_data ["results"][s]["roi"]['sess']
+
             region_name = mat_data ["results"][s]["roi"][r]['name']
             sessions =  mat_data ["results"][s]["roi"][r]['sess']
 
             # loop over sessions
             for i in range (4):
-            	norm = np. array (sessions [i][:]). flatten ()
+                norm = np. array (sessions [i][:]). flatten ()
+                #norm = diff (norm)
+                #norm = diff (norm)
 
-            	# Smoothing
-            	norm = smoothing (norm, alpha = 0.5)
+                # Smoothing
+                norm = smoothing (norm, alpha = 0.5)
                 # Normalization
-            	normalize_vect (norm)
+                normalize_vect (norm)
 
-            	if i == 0:
-            		region_data = np. array (norm)
-            	else:
-            		region_data = np. concatenate ((region_data, np. array (norm)), axis = 0)
+
+                '''plt. plot (norm[0:170])
+                plt. show ()
+                exit (1)'''
+                # True HRF
+                '''true_hrf_delta = 1.5
+                TR = 1
+
+                orig_hrf, t_hrf = spm_hrf(t_r=TR, delta=true_hrf_delta, dur=30)
+
+                # deconvolve the signal
+                nb_iter = 10
+                params = {'y': norm,
+                          't_r': TR,
+                          'hrf': orig_hrf,
+                          'lbda': None,
+                          'nb_iter': nb_iter,
+                          'verbose': 0,
+                          }
+
+
+                est_ar_s, est_ai_s, est_i_s, J, R, G = deconv(**params)
+                normalize_vect (est_ar_s)
+                norm = est_ar_s[:]
+
+                fig = plt.figure(1, figsize=(15, 7))
+                ax0 = fig.add_subplot(2, 1, 1)
+                ax0.plot(norm[10:110], '-y', label="original signal", color = 'b')
+                ax0. legend ()
+
+                ax1 = fig.add_subplot(2, 1, 2)
+                ax1.plot(est_ar_s[10:110], '-y', label="deconvolved signal", color = 'g')
+
+                ax1. legend ()
+                plt. show ()
+                exit (1)'''
+
+
+
+                if i == 0:
+                	region_data = np. array (norm)
+                else:
+                	region_data = np. concatenate ((region_data, np. array (norm)), axis = 0)
 
             bol_signal [region_name] = region_data. flatten ()
 
@@ -244,14 +309,15 @@ if __name__ == '__main__':
             hr = 2
 
             for i in range(nb_hh_convers):
+
                 begin = nearestPoint (index, hh_convers.values[i][1]) + (385 * indice_block)
-                end = nearestPoint (index, hh_convers.values[i][2]) + (385 * indice_block)  + 2 # add two observatiosn after the end of the conversation
+                end = nearestPoint (index, hh_convers.values[i][2]) + (385 * indice_block)  + 3 # add two observatiosn after the end of the conversation
                 convers_to_df (bol_signal, colnames, index, begin, end, "CONV1", hh, args. concat)
                 hh += 2
 
             for i in range(nb_hr_convers):
                 begin = nearestPoint (index, hr_convers.values[i][1]) + (385 * indice_block)
-                end = nearestPoint (index, hr_convers.values[i][2]) + (385 * indice_block) + 2 # add two observatiosn after the end of the conversation
+                end = nearestPoint (index, hr_convers.values[i][2]) + (385 * indice_block) + 3 # add two observatiosn after the end of the conversation
                 convers_to_df (bol_signal, colnames, index, begin, end, "CONV2", hr, args. concat)
                 hr += 2
             indice_block += 1
