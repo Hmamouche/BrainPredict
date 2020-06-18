@@ -80,7 +80,7 @@ private slots:
     void on_predictButton_clicked();
     void disp();
     void on_loadButton_2_clicked();
-    void on_pushButton_4_clicked();
-    void on_pause_clicked();
+    void on_generateTsButton_clicked();
+    void on_animationButton_clicked();
 };
 #endif // MAINWINDOW_H

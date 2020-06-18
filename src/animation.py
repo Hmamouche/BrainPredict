@@ -83,6 +83,9 @@ if __name__ == '__main__':
 
 	nb_to_region (regions)
 
+	if len (regions) == 1:
+		ax = [ax]
+		
 	for j in range (len (regions)):
 		ax [j]. set_xlim (np.min (index), np. max (index) + 1)
 		ax [j]. xaxis.set_minor_locator(MultipleLocator(5))

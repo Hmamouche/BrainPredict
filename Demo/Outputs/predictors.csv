@@ -1,2 +1,2 @@
 LeftSTS;RightTemporoParietalJunction;rMPFC
-disc_SpeechActivity,UnionSocioItems,SpeechActivity,disc_IPU,LexicalRichness2,Polarity;disc_SpeechActivity_left,disc_SpeechActivity,disc_IPU_left;disc_SpeechActivity_left,pose_Tx,disc_IPU_left,pose_Rx
+['SpeechActivity', 'ReactionTime', 'Polarity', 'Overlap', 'LexicalRichness2', 'UnionSocioItems'];['SpeechActivity_left', 'head_translation_energy', 'total_AU', 'AU01_r', 'eyes_AU', 'mouth_AU', 'SpeechActivity'];['eyes_AU', 'head_rotation_energy', 'SpeechActivity_left', 'mouth_AU', 'SpeechActivity']

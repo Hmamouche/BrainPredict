@@ -44,9 +44,6 @@ MainWindow::MainWindow(QWidget *parent):
     if (path.length() == 0){
         path = QDir::currentPath(). toStdString();
     }
-    //path = QDir::currentPath(). toStdString();
-    //setVideoPlayers();
-
 }
 
 void MainWindow::memory_alloc ()
@@ -54,9 +51,7 @@ void MainWindow::memory_alloc ()
     // Memory allocation
     confederate  = new VideoPlayer (this);
     subject  = new VideoPlayer (this);
-
     confederate_audio  = new VideoPlayer (this);
-
     participant = new QLabel (this);
     predictions  = new VideoPlayer (this);
     predictions  = new VideoPlayer (this);
@@ -65,9 +60,7 @@ void MainWindow::memory_alloc ()
     tableWin = new QWidget;
     process = new QProcess (this);
 
-
 }
-
 
 
 // Set video players: video interlocutor, time series, and brain viskualisation
@@ -206,9 +199,22 @@ void MainWindow::on_predictorsButton_clicked()
 
 void MainWindow::on_selectButton_clicked()
 {
+    bool all_checked = 1;
     for(int i = 0; i < this->ui->listWidget->count(); ++i)
-        this->ui->listWidget->item(i)->setCheckState(Qt::Checked);
+        if ( this->ui->listWidget->item(i)->checkState() == Qt::Unchecked)
+        {
+            all_checked = 0;
+            break;
+        }
+    if (all_checked == 0)
+        for(int i = 0; i < this->ui->listWidget->count(); ++i)
+            this->ui->listWidget->item(i)->setCheckState(Qt::Checked);
+
+    else
+        for(int i = 0; i < this->ui->listWidget->count(); ++i)
+            this->ui->listWidget->item(i)->setCheckState(Qt::Unchecked);
 }
+
 void MainWindow::setPredTable()
 {
     // read brain areas from csv file
@@ -238,13 +244,6 @@ void MainWindow::setPredTable()
     tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
-    /*tableWidget->setWordWrap(true);
-    tableWidget->setTextElideMode(Qt::ElideLeft);
-    tableWidget->resizeColumnsToContents();
-    tableWidget->resizeRowsToContents();
-
-    //tableWidget->resizeRowsToContents();*/
-
     tableWidget-> show ();
 }
 
@@ -264,6 +263,7 @@ void MainWindow::on_loadButton_clicked()
     setVideoPlayers();
 
 }
+
 void MainWindow::on_loadButton_2_clicked()
 {
     QString dirName = QFileDialog::getExistingDirectory(this);
@@ -290,34 +290,33 @@ void MainWindow::on_predictButton_clicked()
     // Construct the argument for predict.py file
     QString script = QString::fromStdString  ("python src/predict.py -rg " + areas +
                     " -t " + conversType +
-                    "-pmp PredictionModule -in " + path);
+                    " -pmp PredictionModule -in " + path);
 
     // Execute the script
     qDebug () << script << endl;
     process->execute (script);
     process->waitForFinished();
     qDebug () << "Done" << endl;
-    this->ui->predLabel->setText("Done ...");
+    this->ui->predLabel->setText("... Done.");
     process->close();
 }
 
 // Generate time series when clicked
-void MainWindow::on_pushButton_4_clicked()
+void MainWindow::on_generateTsButton_clicked()
 {
-    QString ex = QString::fromStdString ("sh test.sh");
+    //QString ex = QString::fromStdString ("sh test.sh");
 
-    // Get number of selected regions, and join them with space
-    CVString selectedAreas = getSelectedItems();
+    // Get numbers of selected regions, and join them with space
+    /*CVString selectedAreas = getSelectedItems();
     string areas ("");
     for (auto area : selectedAreas)
-            areas += area + " ";
+            areas += area + " ";*/
 
     // Get OpenFace path from textbrowser
     string openFacePath = this->ui->textBrowser_2->toPlainText().toStdString();
 
     // Construct the argument for predict.py file
-    QString script = QString::fromStdString  ("python src/generate_time_series.py -rg " + areas +
-                    " -ofp " + openFacePath +
+    QString script = QString::fromStdString  ("python src/generate_time_series.py -ofp " + openFacePath +
                     " -pmp PredictionModule -in " + path);
 
     // Execute the script
@@ -326,7 +325,29 @@ void MainWindow::on_pushButton_4_clicked()
     process->waitForStarted();
     process->waitForFinished();
     qDebug () << process->readAll() << endl;
-    this->ui->generateLabel->setText("Done ...");
+    this->ui->generateLabel->setText("... Done.");
     process->close();
 }
 
+
+void MainWindow::on_animationButton_clicked()
+{
+    // Execute the animation script
+    qDebug () << QString::fromStdString  ("python src/animation.py -in " + path) << endl;
+    process->execute ( QString::fromStdString  ("python src/animation.py -in " + path));
+    process->waitForStarted();
+    process->waitForFinished();
+    qDebug () << process->readAll() << endl;
+    process->close();
+
+    // Execute the brain visulaisation script
+    qDebug () << QString::fromStdString  ("python src/visualization.py -in " + path) << endl;
+    process->execute ( QString::fromStdString  ("python src/visualization.py -in " + path));
+    process->waitForStarted();
+    process->waitForFinished();
+    qDebug () << process->readAll() << endl;
+    process->close();
+
+
+    this->ui->animationLabel->setText("... Done.");
+}

@@ -262,7 +262,7 @@ p, li { white-space: pre-wrap; }
      <string>Select/Deselect All</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_4">
+   <widget class="QPushButton" name="generateTsButton">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -272,14 +272,14 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
     <property name="text">
-     <string>Generate Features</string>
+     <string>Generate features</string>
     </property>
    </widget>
    <widget class="QPushButton" name="predictButton">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>430</y>
+      <y>440</y>
       <width>142</width>
       <height>28</height>
      </rect>
@@ -292,7 +292,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>500</y>
+      <y>610</y>
       <width>142</width>
       <height>28</height>
      </rect>
@@ -305,20 +305,20 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>560</y>
+      <y>690</y>
       <width>142</width>
       <height>28</height>
      </rect>
     </property>
     <property name="text">
-     <string>Show Predictors </string>
+     <string>Show predictors </string>
     </property>
    </widget>
    <widget class="QLabel" name="predLabel">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>470</y>
+      <y>480</y>
       <width>141</width>
       <height>21</height>
      </rect>
@@ -424,6 +424,32 @@ p, li { white-space: pre-wrap; }
       <width>20</width>
       <height>20</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="animationButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>520</y>
+      <width>142</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Animations</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="animationLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>560</y>
+      <width>141</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

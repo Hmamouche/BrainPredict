@@ -139,13 +139,12 @@ def extra_features (pred_path, out_dir, type = "eyetracking"):
 if __name__ == '__main__':
     parser = argparse. ArgumentParser ()
     requiredNamed = parser.add_argument_group('Required arguments')
-    requiredNamed. add_argument ('--regions','-rg', help = "Numbers of brain areas to predict (see brain_areas.tsv)", nargs = '+', type=int)
+    #requiredNamed. add_argument ('--regions','-rg', help = "Numbers of brain areas to predict (see brain_areas.tsv)", nargs = '+', type=int)
     requiredNamed.add_argument("--language", "-lg", default = "fr", choices = ["fr", "eng"], help="Language.")
     requiredNamed. add_argument ('--openface_path','-ofp', help = "path of Openface", required=True)
     requiredNamed. add_argument ('--pred_module_path','-pmp', help = "path of the prediction module", required=True)
     requiredNamed. add_argument ('--input_dir','-in', help = "path of input directory", required=True)
     args = parser.parse_args()
-
 
     if args. pred_module_path [-1] == '/':
     	args. pred_module_path = args. pred_module_path [:-1]
@@ -154,10 +153,6 @@ if __name__ == '__main__':
 
     # GET REGIONS NAMES FOR THEIR CODES
     brain_areas_desc = pd. read_csv ("brain_areas.tsv", sep = '\t', header = 0)
-
-    regions = []
-    for num_region in args. regions:
-    	regions. append (brain_areas_desc . loc [brain_areas_desc ["Code"] == num_region, "Name"]. values [0])
 
     """ CREATE OUTPUT DIRECTORIES OF THE GENERATED TIME SERIES """
     for dirct in ["%s/Outputs"%args.input_dir, out_dir, "%s/Outputs/generated_time_series/speech"%args.input_dir, \
