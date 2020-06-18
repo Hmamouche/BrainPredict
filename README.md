@@ -1,6 +1,6 @@
 A tool for predicting and visualizing the fMRI brain activity during bidirectional conversations of type human-human or human-machine. The current version of the executable of the interface "BrainPredict" is compiled in Linux, nevertheless, the code source is provided on Qt with C++17 for compilation on other systems. While the prediction module is implemented in Python3, and can be executed from terminal or using the interface. The conversation's language required by the current version are only french and english.
 
-__This project is in development__.
+__This project is still in development__. It is done  during my postdoctoral research supervised by Laurent Prévot and Magalie Ochs, in the context of the PhysSocial project https://amidex.hypotheses.org/2051 proposed by Thierry Chaminade, where the training data are collected from a fRMI experiment conducted on 24 participants.
 
 
 ## Requirements
