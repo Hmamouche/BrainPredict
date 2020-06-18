@@ -14,7 +14,9 @@ from ast import literal_eval
 import sys
 from tqdm import tqdm
 
-from sklearn.metrics import recall_score, precision_score, f1_score, average_precision_score
+#from sklearn.metrics import recall_score, precision_score, f1_score, average_precision_score
+
+from normalizer import normalizer
 
 
 #---------------------------------------------------#
@@ -100,7 +102,14 @@ if __name__ == '__main__':
     for col in columns:
     	lagged_names. extend ([col + "_t%d"%(p) for p in range (args. lag, 2, -1)])
 
+    # Transform the data into a temporal representation
     all_data = pd. DataFrame (reorganize_data (all_data. values, args. lag), columns = lagged_names)
+
+    # Normalize the data using the same normalizers of trainiong step
+    scaler = normalizer ()
+    scaler. load ("%s/trained_models/min_max_scaler_h%s.pickle"%(args. pred_module_path, args. type))
+    all_data = scaler. transform (all_data)
+
 
 
     # Load trained models found as best for each brain area in the training step
