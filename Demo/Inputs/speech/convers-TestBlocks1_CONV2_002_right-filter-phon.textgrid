@@ -31,7 +31,7 @@ item []:
 		intervals [5]:
 			xmin = 3.8
 			xmax = 4.48997732426
-			text = "{k-O/-m-a~|k-O/-m-a~-t}
+			text = "{k-O/-m-a~-t|k-O/-m-a~}
 {s-A/|s}
 v-A/"
 		intervals [6]:
@@ -59,7 +59,7 @@ v-A/"
 			xmax = 24.2699773243
 			text = "{Z-@|S|Z}
 {n-@|n}
-{s-E|s-E-z|s-e-z|s|s-e}
+{s-e-z|s|s-E|s-e|s-E-z}
 {p-A/|p-A/-z}"
 		intervals [12]:
 			xmin = 24.2699773243
@@ -69,9 +69,9 @@ v-A/"
 			xmin = 28.0
 			xmax = 28.8299773243
 			text = "s
-{e-t|E-s-t-@|t|E-t|e|E|E-s-t}
+{e|E-t|e-t|E-s-t-@|E-s-t|t|E}
 {y-n|y-n-@}
-{p-O/-m-@|p-O/-m}"
+{p-O/-m|p-O/-m-@}"
 		intervals [14]:
 			xmin = 28.8299773243
 			xmax = 36.6049886621
@@ -87,8 +87,8 @@ v-A/"
 		intervals [17]:
 			xmin = 37.1699773243
 			xmax = 37.7899773243
-			text = "{t-y|t|t-j}
-{A/-z|A/-E-s|A/-s|A/}
+			text = "{t|t-j|t-y}
+{A/-z|A/|A/-E-s|A/-s}
 {R-e-z-O~|R-E-z-O~}"
 		intervals [18]:
 			xmin = 37.7899773243
@@ -97,14 +97,14 @@ v-A/"
 		intervals [19]:
 			xmin = 39.9049886621
 			xmax = 41.8699773243
-			text = "{s-e-z|s-E|s-E-z|s-e}
+			text = "{s-E-z|s-E|s-e-z|s-e}
 {j-@|j-2-z}
 {R-2-s-a~-b-l|R-2-s-a~-b-l-2|R-2-s-a~-b-l-2-t}
 A/
 {s-2-z|s-2}
-{d-@|d}
+{d|d-@}
 {U~/-n|U~/}
-{s-y-p-E-R|s-y-p-e-R|s-y-p-e}
+{s-y-p-e-R|s-y-p-e|s-y-p-E-R}
 {j-E-R-O/|e-R-O/}"
 		intervals [20]:
 			xmin = 41.8699773243
@@ -113,9 +113,9 @@ A/
 		intervals [21]:
 			xmin = 49.2099773243
 			xmax = 50.3899773243
-			text = "{s-E-t-@|s-E-t}
-{p-O/-m-@|p-O/-m}
-{e-t|E-s-t-@|t|E-t|e|E|E-s-t}
+			text = "{s-E-t|s-E-t-@}
+{p-O/-m|p-O/-m-@}
+{e|E-t|e-t|E-s-t-@|E-s-t|t|E}
 A/
 l
 {a~-v-E-R|a~-v-E-R-z}"
@@ -127,9 +127,9 @@ l
 			xmin = 52.1849886621
 			xmax = 53.0699773243
 			text = "k
-{e-t|E-s-t-@|t|E-t|e|E|E-s-t}
+{e|E-t|e-t|E-s-t-@|E-s-t|t|E}
 {s-@|s|s-e-2}
-{k-@|k}
+{k|k-@}
 t
 a~
 {p-a~-s-@|p-a~-s}"

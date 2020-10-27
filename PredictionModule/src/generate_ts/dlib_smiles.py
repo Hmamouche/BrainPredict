@@ -27,12 +27,12 @@ if __name__ == '__main__':
 
 	args = parser.parse_args()
 
-	face_cascade = cv2.CascadeClassifier("/home/youssef/opencv-4.1.2/data/haarcascades/haarcascade_frontalface_default.xml")
+	face_cascade = cv2.CascadeClassifier("src/utils/detection_models/haarcascades/haarcascade_frontalface_default.xml")
 	smile_cascade = cv2.CascadeClassifier('/home/youssef/opencv-4.1.2/data/haarcascades/haarcascade_smile.xml')
 
 	if args. out_dir == 'None':
-	    usage ()
-	    exit ()
+		usage ()
+		exit ()
 
 	if args. out_dir[-1] != '/':
 	    args. out_dir += '/'
@@ -46,9 +46,9 @@ if __name__ == '__main__':
 
 	out_file = args. out_dir + conversation_name
 
-	'''if os.path.isfile (out_file + ".pkl"):
-		print ("files already exists")
-		exit (1)'''
+	if os.path.isfile (out_file + ".pkl") and pd.read_pickle  (out_file + ".pkl"). shape [0] > 0:
+		print ("Video already processed!")
+		exit (1)
 
 	# starting video streaming
 	video_capture = cv2.VideoCapture(args.video)
@@ -110,7 +110,7 @@ if __name__ == '__main__':
 	for i in range (1, 50):
 		index. append (1.205 + index [i - 1])
 
-	time_series = resampling. resample_ts (time_series, index, mode = "mode")
+	time_series = resampling. resample_ts (np. array (time_series), index, mode = "mode")
 
-	df = pd. DataFrame (time_series, columns = ["Time (s)", "dlib_smiles"])
+	df = pd. DataFrame (time_series, columns = ["Time (s)", "Smiles_I"])
 	df. to_pickle (out_file + '.pkl')

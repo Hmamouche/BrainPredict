@@ -4,26 +4,30 @@
  ** Year: 2019
 */
 
-#include<QPixmap>
+#include <QPixmap>
 #include <QString>
-#include<QListWidget>
+#include <QListWidget>
 
-#include<QFileDialog>
-#include<QTableView>
-#include<QStandardItemModel>
-#include<QHeaderView>
+#include <QFileDialog>
+#include <QTableView>
+#include <QStandardItemModel>
+#include <QHeaderView>
 
 #include <QDebug>
-#include<experimental/filesystem>
+#include <experimental/filesystem>
 
-#include<vector>
+#include <vector>
 #include <iterator>
 #include <string>
+#include <QMessageBox>
+#include<QApplication>
+#include<QDesktopWidget>
+#include<QScreen>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include<iostream>
+#include <iostream>
 
 using namespace std;
 namespace fs = std::experimental::filesystem;
@@ -33,7 +37,14 @@ MainWindow::MainWindow(QWidget *parent):
    , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->setFixedSize(this->size());
+    //this->setFixedSize(this->size());
+
+    QScreen *screen = QApplication::screens().at(0);
+    int width = screen->availableSize().width();
+    int height = screen->availableSize().height();
+
+    this->setFixedSize(width, height- 50);
+
 
     this->setWindowTitle("BrainPredict");
     memory_alloc ();
@@ -189,7 +200,6 @@ void MainWindow::on_simulationButton_clicked()
     subject->play();
     predictions-> play ();
     brainvis->play();
-
 }
 
 void MainWindow::on_predictorsButton_clicked()
@@ -233,8 +243,10 @@ void MainWindow::setPredTable()
 
 
     model->setHorizontalHeaderLabels(strList);
+
     for (unsigned i = 0; i < mat.size(); ++i)
-        for (unsigned j = 0; j < mat[i].size(); ++j){
+        for (unsigned j = 0; j < mat[i].size(); ++j)
+        {
             model->setItem(int (i), int (j), new QStandardItem(QString::fromStdString(mat[i][j])));
         }
 
@@ -254,16 +266,6 @@ void MainWindow :: disp()
     this->ui->predLabel->update();
 }
 
-void MainWindow::on_loadButton_clicked()
-{
-    QString dirName = QFileDialog::getExistingDirectory(this);
-    this->ui->textBrowser->setText(dirName);
-    path = dirName.toStdString();
-
-    setVideoPlayers();
-
-}
-
 void MainWindow::on_loadButton_2_clicked()
 {
     QString dirName = QFileDialog::getExistingDirectory(this);
@@ -276,6 +278,16 @@ void MainWindow::on_predictButton_clicked()
 {
     // Get number of selected regions, and join them with space
     CVString selectedAreas = getSelectedItems();
+
+
+    if (selectedAreas. size () == 0)
+    {
+        QMessageBox messageBox;
+        messageBox.warning(0,"Warning","Select brain areas to predict !");
+        messageBox.setFixedSize(500,200);
+        return;
+    }
+
     string areas ("");
     for (auto area : selectedAreas)
             areas += area + " ";
@@ -304,14 +316,6 @@ void MainWindow::on_predictButton_clicked()
 // Generate time series when clicked
 void MainWindow::on_generateTsButton_clicked()
 {
-    //QString ex = QString::fromStdString ("sh test.sh");
-
-    // Get numbers of selected regions, and join them with space
-    /*CVString selectedAreas = getSelectedItems();
-    string areas ("");
-    for (auto area : selectedAreas)
-            areas += area + " ";*/
-
     // Get OpenFace path from textbrowser
     string openFacePath = this->ui->textBrowser_2->toPlainText().toStdString();
 
@@ -329,9 +333,22 @@ void MainWindow::on_generateTsButton_clicked()
     process->close();
 }
 
-
+// show animation when clicked
 void MainWindow::on_animationButton_clicked()
 {
+    // Get number of selected regions, and join them with space
+    CVString selectedAreas = getSelectedItems();
+
+
+    if (selectedAreas. size () == 0)
+    {
+        QMessageBox messageBox;
+        messageBox.warning(0,"Warning","Select brain areas to predict !");
+        messageBox.setFixedSize(500,200);
+        return;
+    }
+
+
     // Execute the animation script
     qDebug () << QString::fromStdString  ("python src/animation.py -in " + path) << endl;
     process->execute ( QString::fromStdString  ("python src/animation.py -in " + path));
@@ -350,4 +367,18 @@ void MainWindow::on_animationButton_clicked()
 
 
     this->ui->animationLabel->setText("... Done.");
+}
+
+// play videos when clicked
+void MainWindow::on_loadButton_clicked()
+{
+    QString dirName = QFileDialog::getExistingDirectory(this);
+
+    string shortpath  = split (dirName.toStdString(), '/'). back ();
+    this->ui->textBrowser->setText(QString::fromStdString (shortpath));
+    path = dirName.toStdString();
+
+
+    setVideoPlayers();
+
 }

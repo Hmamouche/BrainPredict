@@ -20,6 +20,13 @@ class normalizer:
 	#----------------------------------#
 	@staticmethod
 	def normalize (vect, minMax):
+		""" Normalizing a vector based using min-max values
+		Parameters
+		----------
+		vect: {'list', 'ndarray'}
+			lis of numpy array of 1 dimension
+		minMax: list
+			list 'of 2 elements, i.e., min and max scalers """
 		for i in range (len (vect)):
 			vect [i] = (vect[i] - minMax[0]) / float(minMax[1] - minMax[0])
 		return vect
