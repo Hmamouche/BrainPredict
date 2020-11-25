@@ -98,12 +98,12 @@ def get_features_from_lagged (lagged_variables):
 #---------------------------------------------------#
 def get_predictors (model_name, region, type, path):
     """
-    model_name: name the prediction model
-    region: brain area
-    type: interaction type (h (human-human) or r (human-robot))
+        model_name: name the prediction model
+        region: brain area
+        type: interaction type (h (human-human) or r (human-robot))
     """
     model_params = pd. read_csv ("%s/results/prediction/%s_H%s.tsv"%(path, model_name, type. upper ()), sep = '\t', header = 0)
-    print (model_params. loc [model_params["region"] == "%s"%region]["predictors_dict"])
+    #print (model_params. loc [model_params["region"] == "%s"%region]["predictors_dict"])
     predictors = model_params . loc [model_params["region"] == "%s"%region]["predictors_dict"]. iloc [0]
 
     return predictors
@@ -111,9 +111,9 @@ def get_predictors (model_name, region, type, path):
 #---------------------------------------------------#
 def get_predictors_dict (model_name, region, type, path):
     """
-    model_name: name the prediction model
-    region: brain area
-    type: interaction type (h (human-human) or r (human-robot))
+        model_name: name the prediction model
+        region: brain area
+        type: interaction type (h (human-human) or r (human-robot))
     """
     model_params = pd. read_csv ("%s/results/prediction/%s_H%s.tsv"%(path, model_name, type. upper ()), sep = '\t', header = 0)
     predictors = model_params . loc [model_params["region"] == "%s"%region]["selected_predictors"]. iloc [0]
@@ -127,14 +127,13 @@ if __name__ == '__main__':
     requiredNamed. add_argument ('--regions','-rg', help = "Numbers of brain areas to predict (see brain_areas.tsv)", nargs = '+', type=int)
     requiredNamed. add_argument ('--type','-t', help = ' conversation type (human or robot)')
     requiredNamed. add_argument ('--lag','-lag', default = 6, type=int)
-    requiredNamed. add_argument ('--pred_module_path','-pmp', help = "path of the prediction module")
+    #requiredNamed. add_argument ('--pred_module_path','-pmp', help = "path of the prediction module")
     requiredNamed. add_argument ('--input_dir','-in', help = "path of input directory")
 
     args = parser.parse_args()
 
-    if args. pred_module_path [-1] == '/':
-    	args. pred_module_path = args. pred_module_path [:-1]
 
+    pred_module_path = "predictionModule/"
     if args. type == 'h':
     	conversation_type = 'HH'
     elif args. type == 'r':
@@ -153,12 +152,12 @@ if __name__ == '__main__':
     	regions. append (brain_areas_desc . loc [brain_areas_desc ["Code"] == num_region, "ShortName"]. values [0])
 
     # WRIGHT MULTIMODAL TIME SERIES TO CSV FILE
-    all_data = pd. read_csv ("%s/Outputs/generated_time_series/features.csv"%args.input_dir, sep = ';', header = 0)
+    all_data = pd. read_csv ("%s/Outputs/generated_time_series/all_features.csv"%args.input_dir, sep = ';', header = 0)
     columns = all_data. columns
 
     # Normalize the data based in min-max scaler of training data
     min_max_scaler = normalizer (all_data)
-    min_max_scaler. load ("%s/trained_models/min_max_scaler_%s.pickle"%(args. pred_module_path, conversation_type.lower ()))
+    min_max_scaler. load ("%s/trained_models/min_max_scaler_%s.pickle"%(pred_module_path, conversation_type.lower ()))
     all_data = min_max_scaler. transform (all_data)
 
     print ("0")
@@ -168,7 +167,7 @@ if __name__ == '__main__':
 
     all_data = pd. DataFrame (toSuppervisedData (all_data. values, args. lag). data, columns = lagged_names)
 
-    trained_models = glob. glob ("%s/trained_models/*%s.pkl"%(args.pred_module_path,conversation_type))
+    trained_models = glob. glob ("%s/trained_models/*%s.pkl"%(pred_module_path,conversation_type))
 
     # dictionary of predictions: results
     preds = {}
@@ -188,7 +187,7 @@ if __name__ == '__main__':
         model_name = fname. split ('/')[-1]. split ('_') [0]
         model = joblib. load (fname)
 
-        predictors = literal_eval (get_predictors_dict (model_name, region, args. type, args.pred_module_path))
+        predictors = literal_eval (get_predictors_dict (model_name, region, args. type, pred_module_path))
         #print ("Predictors time series: ", predictors, "\n -------------")
 
         predictors_data = all_data. loc [:, predictors]

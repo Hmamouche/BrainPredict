@@ -1,8 +1,0 @@
-\begin{tabular}{llll}
-\toprule
- ROI & dm\_method & Predictors & Features\_importances \\
-\midrule
- lSTS & k & ['mfcc\_20', 'mfcc\_14', 'mfcc\_17', 'mfcc\_24', 'mfcc\_25', 'mfcc\_21', 'mfcc\_6', 'mfcc\_22', 'mfcc\_9', 'mfcc\_18', 'mfcc\_8', 'mfcc\_19', 'mfcc\_13', 'mfcc\_7', 'mfcc\_1', 'mfcc\_11', 'mfcc\_2', 'mfcc\_10', 'mfcc\_12', 'mfcc\_3', 'mfcc\_26', 'mfcc\_15', 'mfcc\_23', 'mfcc\_16'] & [] \\
- rSTS & k & ['mfcc\_2', 'mfcc\_5', 'mfcc\_1', 'mfcc\_3'] & [] \\
-\bottomrule
-\end{tabular}

@@ -43,16 +43,16 @@ Then run the executable after setting the execution rights:
 
   ```bash
  # Generate time series
- python src/generate_time_series.py -rg 3 4 7 8 9 10 21 -pmp PredictionModule -in Demo -ofp 'openface path'
+ python src/generate_time_series.py -rg 3 4 7 8 9 10 21 -in demo -ofp 'openface path'
 
  # Make predictions
- python src/predict.py -rg 3 4 7 8 9 10 21 -pmp PredictionModule -in Demo -t r
+ python src/predict.py -rg 3 4 7 8 9 10 21 -in demo -t r
 
  # Generate time series video from the obtained predictions
- python src/animation.py -in Demo
+ python src/animation.py -in demo
 
  # Using visbrain to visualize the prediction in the brain
- python src/visualization.py -in Demo
+ python src/visualization.py -in demo
   ```
    * The required arguments:
    ```bash

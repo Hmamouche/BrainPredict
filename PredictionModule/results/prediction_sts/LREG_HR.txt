@@ -1,8 +1,0 @@
-\begin{tabular}{llll}
-\toprule
- ROI & dm\_method & Predictors & Features\_importances \\
-\midrule
- lSTS & k\_medoids & ['mfcc\_3', 'mfcc\_18', 'mfcc\_23', 'mfcc\_1', 'mfcc\_2', 'mfcc\_22', 'mfcc\_19', 'mfcc\_21'] & [0.22, 0.17, 0.17, 0.14, 0.14, 0.12, 0.03, 0.02] \\
- rSTS & k\_medoids & ['mfcc\_22', 'mfcc\_23', 'mfcc\_4', 'mfcc\_17', 'mfcc\_9', 'mfcc\_14', 'mfcc\_18', 'mfcc\_7', 'mfcc\_1', 'mfcc\_19', 'mfcc\_15', 'mfcc\_2', 'mfcc\_8', 'mfcc\_21', 'mfcc\_6'] & [0.11, 0.11, 0.11, 0.1, 0.08, 0.06, 0.06, 0.06, 0.05, 0.05, 0.04, 0.04, 0.04, 0.03, 0.02] \\
-\bottomrule
-\end{tabular}
