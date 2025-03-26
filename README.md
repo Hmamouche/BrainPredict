@@ -66,3 +66,13 @@ Then run the executable after setting the execution rights:
   --input_dir INPUT_DIR, -in INPUT_DIR
                         path of input directory
   ```
+## Citation
+```bibtex
+@inproceedings{hmamouche2020brainpredict,
+  title={Brainpredict: a tool for predicting and visualising local brain activity},
+  author={Hmamouche, Youssef and Prevot, Laurent and Ochs, Magalie and Chaminade, Thierry},
+  booktitle={Proceedings of the 12th Conference on Language Resources and Evaluation (LREC 2020)},
+  pages={11--16},
+  year={2020}
+}
+```
